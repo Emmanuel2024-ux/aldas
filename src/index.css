@@ -1,0 +1,109 @@
+/* src/index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- RESET & BASE CUSTOM --- */
+@layer base {
+  body {
+    @apply font-sans text-gray-600 bg-white antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-gray-900 font-semibold leading-tight;
+  }
+
+  a {
+    @apply transition-colors duration-300;
+  }
+}
+
+/* --- COMPOSANTS PERSONNALISÉS --- */
+@layer components {
+  .btn-aldas {
+    @apply bg-aldas hover:bg-aldas-dark text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:-translate-y-0.5;
+  }
+  
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+  }
+}
+
+/* --- UTILITAIRES SPÉCIFIQUES & ANIMATIONS --- */
+@layer utilities {
+  /* Scroll fluide */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* --- ANIMATIONS HERO SLIDER --- */
+  
+  /* Apparition en fondu vers le haut (Cascade) */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0; /* État initial caché */
+  }
+
+  /* Glissement depuis la gauche */
+  .animate-slide-in-left {
+    animation: slideInLeft 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  /* Glissement depuis la droite */
+  .animate-slide-in-right {
+    animation: slideInRight 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  /* Barre de progression automatique (pour les dots) */
+  .animate-progress-bar {
+    animation: progressBar 7s linear infinite;
+  }
+
+  /* Délais pour l'effet cascade (Staggering) */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-500 { animation-delay: 500ms; }
+}
+
+/* --- KEYFRAMES (Définition des mouvements) --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes progressBar {
+  from { width: 0%; }
+  to { width: 100%; }
+}
