@@ -81,7 +81,7 @@ export const servicesData: Record<string, ServiceItem> = {
     subtitle: 'Services personnalisés',
     details: 'Accompagnement VIP pour particuliers et entreprises.',
     badge: 'Conciergerie',
-    img: 'https://inspirnova.com/wp-content/uploads/2025/06/chalet-accueil.jpg',
+    img: 'https://www.destiny-conciergerie.net/sites/default/files/2024-08/concier2.webp',
     link: '/services/conciergerie',
     // MISE EN VALEUR : "services de conciergerie" et "exclusive et fluide"
     heroHeadline: 'Nous orchestrons vos <span class="highlight">services de conciergerie</span> afin de garantir une expérience <span class="highlight">exclusive et fluide</span>.',

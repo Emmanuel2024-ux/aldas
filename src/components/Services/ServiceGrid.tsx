@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Plus } from 'lucide-react';
 import { getOtherServices, type ServiceItem } from '../../data/servicesData';
 import ServiceHeroSection from './ServiceHeroSection'; // Correction du nom d'import
+import ModernHR from '../UI/ModernHR';
 
 interface ServiceGridProps {
   currentSlug?: string | null;
@@ -43,25 +44,15 @@ const ServiceGrid = ({ currentSlug, title = "Nos Autres Services", heroTitle }: 
       )}
        
       {/* Section Grille */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        {/* Déco fond subtile */}
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-aldas/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-900/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
-
+      <section className="py-14 bg-white relative overflow-hidden">
+       
         <div className="container mx-auto px-4 relative z-10">
           
-          {/* En-tête de section */}
-          <div className="text-center mb-20 max-w-3xl mx-auto" data-aos="fade-up" data-aos-duration="1000">
-            <span className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-xs font-bold tracking-[0.2em] text-aldas uppercase bg-aldas/5 border border-aldas/20 rounded-full backdrop-blur-sm hover:bg-aldas/10 transition-colors cursor-default" data-aos="zoom-in" data-aos-delay="200">
-              <span className="w-1.5 h-1.5 rounded-full bg-aldas animate-pulse"></span>
-              Découvrez plus
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight leading-tight" data-aos="fade-up" data-aos-delay="300">
-              {sectionTitle}
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-aldas to-transparent mx-auto rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]" data-aos="fade-in" data-aos-delay="400"></div>
-          </div>
+          <ModernHR/>
+           
+          <h5 className="text-3xl pb-2" data-aos="fade-up" data-aos-delay="300">
+            {sectionTitle}
+          </h5>
 
           {/* Grille des services */}
           <div className={gridClass}>
@@ -85,7 +76,7 @@ const ServiceGrid = ({ currentSlug, title = "Nos Autres Services", heroTitle }: 
 // --- SOUS-COMPOSANT CARTE PREMIUM ---
 const ServiceCard = ({ service }: { service: ServiceItem }) => {
   return (
-    <div className="group relative h-[450px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-aldas/20 transition-all duration-700 ease-out transform hover:-translate-y-2 bg-gray-900">
+    <div className="group relative h-[420px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-aldas/20 transition-all duration-700 ease-out transform hover:-translate-y-2 bg-gray-900">
       {/* Image de fond */}
       <div className="absolute inset-0 w-full h-full">
         <img src={service.img} alt={service.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1000ms] ease-out" loading="lazy" />

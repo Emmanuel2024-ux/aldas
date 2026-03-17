@@ -2,6 +2,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay} from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
+import SectionHeaderCentered from './SectionHeaderCenter';
 
 // --- CONFIGURATION DES PARTENAIRES ---
 // Remplace ce tableau par tes propres images situées dans /public/images/partners/
@@ -36,20 +37,14 @@ const PartnersSlider = () => {
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
       
       <div className="container mx-auto px-4 relative z-10">
-        
-        {/* En-tête de section */}
-        <div className="text-center mb-12" data-aos="fade-up">
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-[0.2em] text-aldas uppercase bg-white border border-gray-200 rounded-full shadow-sm">
-            Ils nous font confiance
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-            Nos Partenaires
-          </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-transparent via-aldas to-transparent mx-auto mt-6 rounded-full"></div>
-        </div>
+        <SectionHeaderCentered
+          badge="Partenaires"
+          title='Ils nous font confiance'
+          description="Découvrez les entreprises et organisations qui nous font confiance pour leurs besoins."
+        />
 
         {/* SWIPER SLIDER */}
-        <div className="w-full max-w-7xl mx-auto">
+        <div className="w-full max-w-7xl mt-12 mx-auto">
           <Swiper
             modules={[Autoplay]}
             spaceBetween={30}

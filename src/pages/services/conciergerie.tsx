@@ -1,11 +1,12 @@
 // src/pages/services/Conciergerie.tsx
 import { Link } from 'react-router-dom';
-import { Clock, Zap, EyeOff, CheckCircle, Star, ArrowRight} from 'lucide-react';
+import { CheckCircle, Star, ArrowRight } from 'lucide-react';
 import PageHero from '../../components/UI/PageHero';
 import { servicesData } from '../../data/servicesData';
 import ServiceGrid from '../../components/Services/ServiceGrid';
+import AptitudesSection from '../../components/UI/AptitudeSession';
 
-// --- DONNÉES DÉTAILLÉES DES SERVICES (Fusionnées et enrichies) ---
+// --- DONNÉES DÉTAILLÉES DES SERVICES ---
 const conciergeServices = [
   {
     title: 'Mise à disposition de personnel',
@@ -85,145 +86,143 @@ const conciergeServices = [
 ];
 
 const Conciergerie = () => {
-  // Récupération des données de base pour le Hero (optionnel, si tu veux utiliser celles de servicesData)
   const pageData = servicesData['conciergerie'];
 
   return (
     <div className="bg-white font-sans antialiased selection:bg-aldas selection:text-white">
       
-      {/* --- 1. HERO SPÉCIFIQUE AVEC TEXTE COLORÉ --- */}
+      {/* --- 1. HERO SPÉCIFIQUE --- */}
       <PageHero 
-        image={pageData.img} // Ou une image dédiée plus large
-        title="Conciergerie Privée"
-        subtitle="Bien plus qu'un service, <span class='highlight'>un art de vous simplifier la vie</span>."
-        btnText="Devenir Membre"
+        image={pageData.img}
+        title={pageData.title}
+        subtitle={pageData.heroHeadline}
+        btnText="Contactez-nous"
         btnLink="#contact-conciergerie"
       />
 
-      {/* --- 2. SECTION À PROPOS (Avec Décorations de Fond) --- */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        
-        {/* --- DÉCORATIONS DE FOND (Équivalent du background-image CSS) --- */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* 1. Texture Centrale (Citations) - Cover */}
-          <div 
-            className="absolute inset-0 opacity-[0.03] mix-blend-multiply"
-            style={{
-              backgroundImage: `url("https://www.destiny-conciergerie.net/sites/default/files/citationss.webp")`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-          ></div>
-
-          {/* 2. Frise Gauche (Bottom-Left) - 21% */}
-          <div 
-            className="absolute bottom-0 left-0 w-[25%] md:w-[21%] h-auto aspect-square opacity-[0.06]"
-            style={{
-              backgroundImage: `url("https://www.destiny-conciergerie.net/sites/default/files/frise-left.webp")`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'bottom left',
-              backgroundRepeat: 'no-repeat'
-            }}
-          ></div>
-
-          {/* 3. Frise Droite (Top-Right) - 21% */}
-          <div 
-            className="absolute top-0 right-0 w-[25%] md:w-[21%] h-auto aspect-square opacity-[0.06]"
-            style={{
-              backgroundImage: `url("https://www.destiny-conciergerie.net/sites/default/files/frise-right.webp")`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'top right',
-              backgroundRepeat: 'no-repeat'
-            }}
-          ></div>
-        </div>
-        {/* ----------------------------------------------- */}
-
+      {/* --- 2. SECTION À PROPOS (Design Fidèle PHP/CSS) --- */}
+      <section 
+        className="relative py-12 md:py-20 overflow-hidden bg-white"
+        style={{
+          backgroundImage: `
+            url("https://www.destiny-conciergerie.net/sites/default/files/citationss.webp"),
+            url("https://www.destiny-conciergerie.net/sites/default/files/frise-left.webp"),
+            url("https://www.destiny-conciergerie.net/sites/default/files/frise-right.webp")
+          `,
+          backgroundSize: 'cover, 21%, 21%',
+          backgroundRepeat: 'no-repeat, no-repeat, no-repeat',
+          backgroundPosition: 'center right, left bottom, right top'
+        }}
+      >
         <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-0">
             
-            {/* Texte */}
-            <div className="w-full lg:w-1/2 space-y-8" data-aos="fade-right" data-aos-duration="1000">
-              <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-[0.2em] text-aldas uppercase bg-aldas/5 border border-aldas/20 rounded-full">
-                Conciergerie Haut de Gamme
-              </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
-                Chaque demande devient <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-aldas to-cyan-600">une attention exclusive.</span>
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed font-light">
-                Avec <strong className="text-gray-900">ÁLDÁS Conciergerie</strong>, la disponibilité totale, la discrétion absolue et l'exécution parfaite ne sont pas des options, mais notre standard pour répondre aux exigences les plus élevées.
-              </p>
+            {/* COLONNE TEXTE */}
+            <div className="w-full lg:w-1/2 space-y-6" data-aos="fade-right" data-aos-duration="1000">
               
-              <ul className="space-y-4 pt-4">
+              {/* Badge */}
+              <span 
+                className="inline-block px-3 py-2 md:px-4 md:py-2 text-sm md:text-base font-bold tracking-wide uppercase text-[#0b2545] rounded-full mb-4"
+                style={{ 
+                  backgroundColor: 'rgba(0,184,148,0.15)',
+                  fontSize: 'clamp(0.7rem, 0.5vw, 1rem)',
+                  padding: 'clamp(6px, 1vw, 8px)',
+                  marginBottom: 'clamp(10px, 2vw, 14px)'
+                }}
+              >
+                Conciergerie haut de gamme
+              </span>
+
+              {/* Titre avec Highlight */}
+              <h2 
+                className="font-bold text-[#0b2545] leading-tight mb-6"
+                style={{ 
+                  fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+                  marginBottom: 'clamp(15px, 3vw, 20px)'
+                }}
+              >
+                Bien plus qu'un service,
+                <br />
+                <span 
+                  className="font-extrabold"
+                  style={{
+                    background: 'linear-gradient(90deg, #00b894, #1ed0a2)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}
+                >
+                  un art de vous simplifier la vie
+                </span>
+              </h2>
+
+              {/* Texte */}
+              <p 
+                className="text-[#5f6f82] leading-relaxed font-light"
+                style={{ 
+                  fontSize: 'clamp(0.8rem, 2vw, 1rem)',
+                  lineHeight: '1.8',
+                  marginBottom: 'clamp(20px, 3vw, 24px)'
+                }}
+              >
+                Avec <strong className="text-[#0b2545] font-semibold">ÁLDÁS Conciergerie</strong>, chaque demande devient une attention exclusive. Disponibilité totale, discrétion absolue et exécution parfaite, pour répondre aux exigences les plus élevées.
+              </p>
+
+              {/* Liste à puces */}
+              <ul className="list-none p-0 m-0 space-y-3">
                 {[
                   'Assistance personnalisée 24h/24 – 7j/7',
                   'Gestion de demandes privées et professionnelles',
-                  'Réseau de partenaires premium vérifiés',
+                  'Réseau de partenaires premium',
                   'Confidentialité et excellence garanties'
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-gray-700 font-medium">
-                    <CheckCircle className="text-aldas shrink-0 mt-1" size={20} />
+                  <li 
+                    key={i} 
+                    className="flex items-center gap-3 font-medium text-[#0b2545]"
+                    style={{ 
+                      marginBottom: 'clamp(8px, 1.5vw, 12px)',
+                      gap: 'clamp(8px, 2vw, 10px)'
+                    }}
+                  >
+                    <CheckCircle 
+                      className="shrink-0 text-[#00b894]" 
+                      size={20} 
+                      style={{ fontSize: 'clamp(0.8rem, 2vw, 1rem)' }}
+                      fill="currentColor"
+                    />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
+
             </div>
 
-            {/* Espace visuel (Respiration) - Comme dans ton design original */}
+            {/* COLONNE VIDE (RESPIRATION VISUELLE) */}
             <div className="w-full lg:w-1/2"></div>
+
           </div>
         </div>
       </section>
 
-      {/* --- 3. APTITUDES CLÉS (3 Piliers) --- */}
-      <section className="py-24 bg-gray-50 relative">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 max-w-3xl mx-auto" data-aos="fade-up">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-              Nos <span className="text-aldas">aptitudes clés</span>
-            </h2>
-            <p className="text-gray-600 text-lg font-light">
-              Trois piliers essentiels qui définissent l'excellence de notre conciergerie.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                icon: Clock,
-                title: 'L\'assistance',
-                text: 'Une équipe de concierges dédiés à votre service, disponible 24h/24 – 7j/7, pour répondre à toutes vos demandes, des plus simples aux plus complexes.'
-              },
-              {
-                icon: Zap,
-                title: 'La réactivité',
-                text: 'Un accès privilégié à un réseau exclusif de partenaires et services, vous ouvrant les portes des meilleures adresses et expériences instantanément.'
-              },
-              {
-                icon: EyeOff,
-                title: 'L\'anticipation',
-                text: 'Grâce à une équipe parfaitement formée, discrète et pleine de ressources, nous anticipons vos besoins pour vous offrir des solutions précises et sur mesure.'
-              }
-            ].map((apt, idx) => (
-              <div 
-                key={idx} 
-                className="bg-white p-8 md:p-10 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 flex flex-col items-center text-center group"
-                data-aos="fade-up"
-                data-aos-delay={idx * 150}
-              >
-                <div className="w-24 h-24 bg-aldas/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-aldas group-hover:scale-110 transition-all duration-500">
-                  <apt.icon size={40} className="text-aldas group-hover:text-white transition-colors duration-500" strokeWidth={1.5} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{apt.title}</h3>
-                <p className="text-gray-600 leading-relaxed font-light">{apt.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      <AptitudesSection 
+        items={[
+          {
+            iconSrc: "https://www.destiny-conciergerie.net/sites/default/files/picto1.webp",
+            title: "L'assistance",
+            text: "Une équipe de concierges dédiés à votre service, disponible <strong>24h/24 – 7j/7</strong>, pour répondre à toutes vos demandes, des plus simples aux plus complexes."
+          },
+          {
+            iconSrc: "https://www.destiny-conciergerie.net/sites/default/files/picto2.webp",
+            title: "La réactivité",
+            text: "Un accès privilégié à un <strong>réseau exclusif de partenaires et services</strong>, vous ouvrant les portes des meilleures adresses et expériences."
+          },
+          {
+            iconSrc: "https://www.destiny-conciergerie.net/sites/default/files/picto3.webp",
+            title: "L'anticipation",
+            text: "Grâce à une équipe parfaitement formée, discrète et pleine de ressources, nous anticipons vos besoins pour vous offrir des solutions <strong>précises et sur mesure</strong>."
+          }
+          // Tu peux ajouter un 4ème item ici si besoin, la grille s'adaptera automatiquement !
+        ]}
+      />
       {/* --- 4. GRILLE DE SERVICES "RIDEAU" (Dark Mode) --- */}
       <section className="py-24 bg-[#0b0f14] text-white relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
@@ -244,7 +243,6 @@ const Conciergerie = () => {
                 data-aos="fade-up"
                 data-aos-delay={idx * 50}
               >
-                {/* Image de fond */}
                 <img 
                   src={service.image} 
                   alt={service.title} 
@@ -252,14 +250,12 @@ const Conciergerie = () => {
                   loading="lazy"
                 />
                 
-                {/* Footer Titre (Bandeau Gradient) */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-aldas to-cyan-500 p-4 z-20">
                   <h3 className="text-base md:text-lg font-bold text-[#0b2545] truncate uppercase tracking-wide">
                     {service.title}
                   </h3>
                 </div>
 
-                {/* Overlay Rideau (Glisse du haut) */}
                 <div className="absolute inset-0 bg-[#0b2545]/95 backdrop-blur-sm transform -translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-30 flex flex-col justify-center p-8">
                   <ul className="space-y-3 mb-8">
                     {service.items.map((item, i) => (
@@ -282,7 +278,8 @@ const Conciergerie = () => {
         </div>
       </section>
 
-      <ServiceGrid title="Découvrez nos autres pôles d'excellence" heroTitle={pageData.heroHeadline}/>
+      {/* --- 5. AUTRES SERVICES (Optionnel) --- */}
+      <ServiceGrid heroTitle={pageData.heroHeadline}/>
 
     </div>
   );

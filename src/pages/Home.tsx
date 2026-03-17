@@ -1,38 +1,42 @@
 // src/pages/Home.tsx
 import ContactFormSplit from '../components/Contact/ContactFormSplit';
+import FeaturedEventSection from '../components/Home/FeaturedEventSection';
 import HeroSlider from '../components/Home/HeroSlider';
+import PresentationSection from '../components/Home/PresentationSection';
+import ServicesSection from '../components/Home/ServicesSection';
 import VehicleShowcase from '../components/Services/VehicleShowcase';
 import PartnersSlider from '../components/UI/PartnersSlider';
+import SectionHeader from '../components/UI/SectionHeader';
 
 const Home = () => {
   return (
     <div className="animate-fade-in">
       {/* 1. Le Slider Héro (Uniquement sur la page d'accueil) */}
       <HeroSlider />
+      
+      <PresentationSection />
 
-      {/* 2. Section Engagements (Exemple rapide pour remplir) */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-aldas-dark mb-4">Pourquoi choisir ÁLDÁS ?</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-            Excellence, discrétion et réactivité sont au cœur de notre métier.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { title: "Flotte Premium", desc: "Des véhicules récents et entretenus." },
-              { title: "Chauffeurs Experts", desc: "Professionnels, courtois et formés." },
-              { title: "Disponibilité 24/7", desc: "Un service client toujours joignable." }
-            ].map((item, i) => (
-              <div key={i} className="p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow">
-                <h3 className="text-xl font-bold text-aldas mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <ServicesSection />
+
+      <FeaturedEventSection 
+        title="Gala des 50 ans de PETROCI"
+        category="Événement Corporate"
+        date="15 Octobre 2025"
+        location="Sofitel Hôtel Ivoire, Abidjan"
+        attendees="500+ Invités VIP"
+        description="Une soirée d'exception célébrant un demi-siècle d'excellence. Scénographie immersive, logistique millimétrée et expérience inoubliable pour les plus hautes autorités du secteur."
+        imageUrl="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1920&q=80"
+        link="/services/evenements"
+      />
+
+      
+      <section className="bg-slate-50 mb-12 py-16 md:py-20">
+        <SectionHeader 
+          title="Découvrez notre flotte"
+          subtitle="Notre gamme de véhicules pour entreprises et particuliers"
+        />
+        <VehicleShowcase />
       </section>
-      <VehicleShowcase />
       <div className="relative z-40 -mt-20">
         <ContactFormSplit 
           title="Une demande exclusive ?"
@@ -40,6 +44,7 @@ const Home = () => {
           backgroundImage="https://www.africaguestservices.com/img/agency/portfolio/carousel/AdobeStock_78477370.jpeg"
         />
       </div>
+
       <PartnersSlider />
     </div>
   );

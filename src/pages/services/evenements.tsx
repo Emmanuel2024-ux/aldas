@@ -1,44 +1,47 @@
+// src/pages/services/Evenementiel.tsx
 import PageHero from '../../components/UI/PageHero';
 import ServiceGrid from '../../components/Services/ServiceGrid';
 import { servicesData } from '../../data/servicesData';
-import { CheckCircle2 } from 'lucide-react';
+import RealizationsGrid from '../../components/Events/RealizationsGrid';
+import EventSlider from '../../components/Events/EventsSlider';
+import EventPoles from '../../components/Events/EventsPoles';
+import ModernHR from '../../components/UI/ModernHR';
+import SectionHeaderCentered from '../../components/UI/SectionHeaderCenter';
 
 const Evenementiel = () => {
-  // On récupère les données spécifiques à cette page
   const pageData = servicesData['evenements'];
 
   return (
-    <div>
-      {/* Hero Spécifique au service */}
+    <div className="bg-white font-sans antialiased">
+      
+      {/* 1. HERO */}
       <PageHero 
         image={pageData.img}
         title={pageData.title}
-        subtitle={pageData.heroHeadline} // Ou un sous-titre plus court
-        btnText="Réserver maintenant"
+        subtitle={pageData.heroHeadline}
+        btnText="Demander un devis"
         btnLink="/contact"
       />
 
-      {/* Section Détails du service (Contenu unique) */}
-      <section className="py-16 container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Pourquoi choisir notre flotte ?</h2>
-            <p className="text-gray-600 mb-6">{pageData.details}</p>
-            <ul className="space-y-3">
-              {pageData.features.map((feat, i) => (
-                <li key={i} className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle2 className="text-aldas shrink-0" size={20} />
-                  {feat.text}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <img src={pageData.img} alt={pageData.title} className="rounded-2xl shadow-xl" />
-        </div>
-      </section>
+      {/* 2. SLIDER DUAL PANEL */}
+      <EventSlider />
+      <ModernHR />
+     
+      <SectionHeaderCentered 
+        badge="Events Pro"
+        title="Nous Imaginons. Nous Créons. Nous Orchestrons."
+        description="Une équipe spécialisée en organisation d'événements à Abidjan, dédiée à transformer chaque vision en expérience mémorable et immersive."
+      />
 
-      {/* Intégration du Grid : Exclura AUTOMATIQUEMENT 'mobilite' */}
-      <ServiceGrid title="Découvrez nos autres pôles d'excellence" heroTitle={pageData.heroHeadline}/>
+      {/* 4. PÔLES D'ACTIVITÉ */}
+      <EventPoles />
+      
+      {/* 5. RÉALISATIONS */}
+      <RealizationsGrid />
+
+      {/* 6. AUTRES SERVICES */}
+      <ServiceGrid heroTitle={pageData.heroHeadline}/>
+      
     </div>
   );
 };
