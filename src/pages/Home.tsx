@@ -38,11 +38,7 @@ const Home = () => {
         <VehicleShowcase />
       </section>
       <div className="relative z-40 -mt-20">
-        <ContactFormSplit 
-          title="Une demande exclusive ?"
-          subtitle="Parlez-nous de votre projet"
-          backgroundImage="https://www.africaguestservices.com/img/agency/portfolio/carousel/AdobeStock_78477370.jpeg"
-        />
+        <ContactFormSplit  />
       </div>
 
       <PartnersSlider />

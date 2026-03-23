@@ -1,5 +1,5 @@
-// src/components/Home/PresentationSection.tsx
 import SectionHeader from '../UI/SectionHeader';
+import heroIndex from '../../assets/images/hero-index.jpeg';
 
 const PresentationSection = () => {
   return (
@@ -101,7 +101,7 @@ const PresentationSection = () => {
             {/* Image Principale avec Effet Zoom Lent */}
             <div className="relative z-20 w-full h-[380px] md:h-[420px] rounded-tr-[60px] rounded-bl-[60px] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.2)]">
               <img 
-                src="https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg"
+                src={heroIndex}
                 alt="Certification et flotte de véhicules modernes ÁLDÁS"
                 className="w-full h-full object-cover transition-transform duration-[2000ms] ease-out group-hover/image:scale-105"
                 loading="lazy"

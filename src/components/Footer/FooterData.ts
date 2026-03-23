@@ -1,9 +1,9 @@
-// src/components/Footer/FooterData.ts
+import logo from '../../assets/logos/logo.png'
 
 export const footerData = {
   brand: {
     name: "ÁLDÁS",
-    logo: "/images/icon.jpg", // Assure-toi de mettre ton image dans le dossier public/images
+    logo: logo, // Assure-toi de mettre ton image dans le dossier public/images
     description: "ÁLDÁS met à votre disposition quatre pôles d’excellence : Location de voiture, Service de Navette, Événementiel et Conciergerie haut de gamme. Pour chaque besoin, nous offrons un accompagnement précis, discret et orienté excellence.",
     developedBy: "ÁLDÁS IT"
   },

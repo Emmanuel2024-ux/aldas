@@ -1,4 +1,3 @@
-// src/components/Footer/Footer.tsx
 import { footerData } from './FooterData';
 import { Phone, MessageCircle, Mail, MapPin, CarFront, Users, Stars, Gem, Facebook, Instagram, Linkedin, ArrowRight, Send } from 'lucide-react';
 import WhatsAppFloat from './WhatsAppFloat';

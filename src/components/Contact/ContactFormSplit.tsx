@@ -1,6 +1,7 @@
-// src/components/Contact/ContactFormSplit.tsx
+
 import { useState } from 'react';
 import { Clock, MapPin, CheckCircle, User, Mail, Phone, Briefcase, MessageSquare, Send } from 'lucide-react';
+import contactFixe from '../../assets/images/contact-fixe.jpeg';
 
 interface ContactFormSplitProps {
   title?: string;
@@ -12,7 +13,7 @@ interface ContactFormSplitProps {
 const ContactFormSplit = ({
   title = "Une demande spéciale ?",
   subtitle = "Parlez-nous de votre projet",
-  backgroundImage = "https://www.africaguestservices.com/img/agency/portfolio/carousel/AdobeStock_78477370.jpeg",
+  backgroundImage = contactFixe,
   onFormSubmit
 }: ContactFormSplitProps) => {
   const [formData, setFormData] = useState({ 

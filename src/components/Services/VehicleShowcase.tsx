@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
+
 import { carsData } from '../../data/carsData';
 import VehicleCard from './VehicleCard'; // Import de la carte séparée
 

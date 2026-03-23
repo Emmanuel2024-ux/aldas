@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Users, ArrowRight, Star } from 'lucide-react';
 import { useState } from 'react';
 import EventLightbox from '../UI/EventLightBox';
+import illustrationEventsRealize from '../../assets/images/illustration-events-realize.jpg';
 
 const FeaturedEventSection = ({
   title = "Gala des 50 ans de PETROCI", 
@@ -10,7 +11,7 @@ const FeaturedEventSection = ({
   location = "Sofitel Hôtel Ivoire, Abidjan",
   attendees = "500+ Invités VIP",
   description = "Une soirée d'exception célébrant un demi-siècle d'excellence. Scénographie immersive, logistique millimétrée et expérience inoubliable pour les plus hautes autorités du secteur.",
-  imageUrl = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1920&q=80",
+  imageUrl = illustrationEventsRealize,
   link = "/services/evenements"
 }: any) => {
   

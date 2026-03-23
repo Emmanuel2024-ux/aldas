@@ -1,6 +1,9 @@
-// src/components/Events/PolesSection.tsx
 import { Briefcase, Target, Users, Home, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import corporate from '../../assets/images/events/corporate.webp';
+import activation from '../../assets/images/events/activation.jpg';
+import gp from '../../assets/images/events/gp.jpg';
+import institutionnel from '../../assets/images/events/institutionnel.webp';
 
 // --- TYPES ---
 interface PoleItem {
@@ -25,7 +28,7 @@ const defaultPoles: PoleItem[] = [
     icon: Briefcase,
     title: 'Solutions Corporate',
     desc: 'Un accompagnement complet pour structurer et sublimer la communication interne et externe des entreprises.',
-    imageSrc: 'https://heroiksevent.com/wp-content/uploads/2025/06/18.webp',
+    imageSrc: corporate,
     imageAlt: 'Événement Corporate',
     list: ['Séminaires & conventions', 'Team-building & cohésion', 'Lancements corporate', 'Scénographie & technique'],
     link: '/contact'
@@ -35,7 +38,7 @@ const defaultPoles: PoleItem[] = [
     icon: Target,
     title: 'Activation & Engagement',
     desc: 'Des dispositifs impactants pour renforcer la visibilité, l\'engagement et la proximité avec vos audiences.',
-    imageSrc: 'https://pictures.latribune.fr/cdn-cgi/image/format=auto,width=1200,height=675/media/melody/2025/10/24/la-gsma-lassociation-mondiale-des-operateurs-telecoms-a-reuni-a-kigali-les-acteurs-majeurs-du-secteu-1761281814_e1a0fdb71af86c5a0fdb71af8f9a0fv_.jpg',
+    imageSrc: activation,
     imageAlt: 'Activation de marque',
     list: ['Roadshows & tournées', 'Brand activation', 'Expériences immersives', 'Animations interactives'],
     link: '/contact'
@@ -45,7 +48,7 @@ const defaultPoles: PoleItem[] = [
     icon: Users,
     title: 'Événements Grand Public',
     desc: 'Des événements d\'envergure conçus pour rassembler, divertir et créer des expériences mémorables.',
-    imageSrc: 'https://images.ladepeche.fr/api/v1/images/view/66823731c25830128520b0e2/large/image.jpg?v=1',
+    imageSrc: gp,
     imageAlt: 'Festival Grand Public',
     list: ['Concerts & festivals', 'Gestion de flux', 'Installations techniques', 'Scénographie événementielle'],
     link: '/contact'
@@ -55,7 +58,7 @@ const defaultPoles: PoleItem[] = [
     icon: Home,
     title: 'Projets Institutionnels',
     desc: 'Une maîtrise rigoureuse des protocoles officiels et des enjeux stratégiques des institutions publiques.',
-    imageSrc: 'https://www.linfodrome.com/media/article/images/src/116470-design-sans-titre-2025-12-12t125646615.webp',
+    imageSrc: institutionnel,
     imageAlt: 'Cérémonie Institutionnelle',
     list: ['Cérémonies officielles', 'Inaugurations', 'Gestion protocolaire', 'Dispositifs premium'],
     link: '/contact'

@@ -1,4 +1,4 @@
-// src/components/Header/Navbar.tsx
+import logo from '../../assets/logos/logo.png'
 import { useState } from 'react';
 import { Menu, X, ChevronDown, CarFront, Users, Stars, Gem, ArrowRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -48,15 +48,12 @@ const Navbar = ({ isScrolled }: { isScrolled: boolean }) => {
           {/* LOGO */}
           <Link to="/" className="flex items-center gap-2.5 group">
             <img 
-              src="/images/icon-1.png" 
+              src={logo} 
               alt="Áldás Logo" 
               className={`transition-all duration-500 object-contain ${
                 isScrolled ? 'h-8 w-auto' : 'h-10 w-auto'
               }`}
             />
-            <span className="font-bold text-xl tracking-tight hidden sm:block text-black transition-colors duration-500">
-              ÁLDÁS
-            </span>
           </Link>
 
           {/* MENU DESKTOP */}
@@ -131,8 +128,8 @@ const Navbar = ({ isScrolled }: { isScrolled: boolean }) => {
                 
                 {/* Pied du menu */}
                 <div className="bg-gray-50/50 px-5 py-3 border-t border-gray-50">
-                  <Link to="/services" className="text-xs font-bold text-aldas hover:text-aldas-dark flex items-center gap-1.5 group/link transition-colors">
-                    Voir tous les services 
+                  <Link to="/contact" className="text-xs font-bold text-aldas hover:text-aldas-dark flex items-center gap-1.5 group/link transition-colors">
+                    Besoin d'aide pour choisir ?
                     <ArrowRight size={14} className="transform group-hover/link:translate-x-1 transition-transform" />
                   </Link>
                 </div>

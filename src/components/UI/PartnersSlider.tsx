@@ -2,6 +2,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay} from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
+
 import SectionHeaderCentered from './SectionHeaderCenter';
 
 // --- CONFIGURATION DES PARTENAIRES ---

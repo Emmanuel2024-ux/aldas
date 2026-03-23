@@ -1,4 +1,3 @@
-// src/components/Home/HeroSlider.tsx
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';

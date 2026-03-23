@@ -3,10 +3,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import { Star, Users, Lightbulb, ShieldCheck, Rocket, ThumbsUp } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-
-// Import des styles de base de Swiper
+import fixeSlide from '../../assets/images/events/fixe-slide.jpeg';
 import 'swiper/swiper-bundle.css';
-
 // --- TYPES & DONNÉES ---
 interface SlideData {
   icon: LucideIcon;
@@ -114,7 +112,7 @@ const EventSlider = ({ slides = defaultSlides, backgroundImage }: EventSliderPro
         {/* IMAGE FIXE (Right Panel) */}
         <div className="right-panel" style={styles.rightPanel}>
           <img 
-            src={backgroundImage || "https://files.sbcdnsb.com/images/HXpFBpNr8YlxlU7lfpCetw/content/1614697676/1749456/2000/c7987c235349a9dafeab20210302-1593050-13mzr58.jpeg"} 
+            src={backgroundImage || fixeSlide} 
             alt="Événement premium Áldás" 
             style={styles.image}
             className="hover-scale-img" // Classe utilitaire pour le hover si besoin via CSS global, sinon géré par inline

@@ -7,8 +7,10 @@ import { CheckCircle, AlertTriangle, Clock, UserCheck, CreditCard, MapPin, Shiel
 import { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/swiper-bundle.css';
+
 import SectionHeaderCentered from '../../components/UI/SectionHeaderCenter';
+import bgMobilite from '../../assets/images/bg-mobilite.jpg';
+import bgMobilite2 from '../../assets/images/bg-mobilite2.jpg';
 
 // --- DONNÉES DES CONDITIONS ---
 const rentalConditions = [
@@ -82,7 +84,7 @@ const Mobilite = () => {
           style={{
             background: `
               linear-gradient(to bottom, rgba(15, 22, 32, 0.95) 0%, rgba(15, 22, 32, 0.6) 40%, rgba(15, 22, 32, 0.2) 70%, transparent 100%),
-              url('https://img.sixt.com/2800/0050d693-9001-48e6-9229-0bc84d01b0cd.jpg')
+              url(${bgMobilite2})
             `,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -316,7 +318,7 @@ const Mobilite = () => {
             <div 
               className="absolute inset-0 w-full h-[120%] -top-[10%]"
               style={{
-                backgroundImage: `url("https://img.sixt.com/1600/6991794e-8a4e-448d-9c1d-16fc931dec93.jpg")`,
+                backgroundImage: `url(${bgMobilite})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 transform: `translateY(${scrollY * 0.05}px)`,

@@ -3,6 +3,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CarFront, ArrowLeftRight, Gem, ArrowRight, Sparkles, Calendar } from 'lucide-react';
 import SectionHeader from '../UI/SectionHeader';
+import slideVerticalMobilite from '../../assets/images/slide-vertical-mobilite.jpg';
+import slideVerticalNavette from '../../assets/images/slide-vertical-navette.jpg';
+import slideVerticalConciergerie from '../../assets/images/slide-vertical-conciergerie.jpg';
+import illustrationEventsRealize from '../../assets/images/illustration-events-realize.jpg';
 // --- DONNÉES DES SERVICES ---
 const servicesData = [
   {
@@ -37,10 +41,10 @@ const servicesData = [
 
 // --- IMAGES POUR LE FADE SLIDER ---
 const serviceImages = [
-  { src: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80', alt: 'Flotte de luxe Áldás' },
-  { src: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=800&q=80', alt: 'Service de navette premium' },
-  { src: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80', alt: 'Événementiel corporate' },
-  { src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80', alt: 'Conciergerie de luxe' }
+  { src: slideVerticalMobilite, alt: 'Flotte de luxe Áldás' },
+  { src: slideVerticalNavette, alt: 'Service de navette premium' },
+  { src: illustrationEventsRealize, alt: 'Événementiel corporate' },
+  { src: slideVerticalConciergerie, alt: 'Conciergerie de luxe' }
 ];
 
 const ServicesSection = () => {
@@ -57,7 +61,7 @@ const ServicesSection = () => {
   }, [isHoveringSlider]);
 
   return (
-    <section className="py-20 md:py-28 overflow-hidden relative group/section" aria-labelledby="services-title">
+    <section id='services' className="py-20 md:py-28 overflow-hidden relative group/section" aria-labelledby="services-title">
       
       {/* Décos de fond avancées */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-emerald-100/40 to-blue-100/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none opacity-60"></div>

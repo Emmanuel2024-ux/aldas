@@ -22,6 +22,11 @@ export interface ServiceItem {
   heroHeadline: string; // Peut contenir du HTML <span class="highlight">
   features: Feature[];
 }
+import cars from '../assets/images/service-mobilite.webp';
+import vans from '../assets/images/service-navette.jpg';
+import events from '../assets/images/service-events.jpg';
+import conciergerie from '../assets/images/service-conciergerie.jpeg';
+
 
 export const servicesData: Record<string, ServiceItem> = {
   mobilite: {
@@ -30,7 +35,7 @@ export const servicesData: Record<string, ServiceItem> = {
     subtitle: 'Flotte haut de gamme',
     details: 'Véhicules récents et luxueux pour tous vos déplacements.',
     badge: 'Mobilité',
-    img: 'https://img.sixt.com/2800/a58475de-1da1-429c-819e-31721300ffee.jpg',
+    img: cars,
     link: '/services/mobilite',
     // MISE EN VALEUR : "véhicules de location" et "simple et sans stress"
     heroHeadline: 'Nous mettons à votre disposition des <span class="highlight">véhicules de location</span> pour vous offrir une expérience <span class="highlight">simple et sans stress</span>.',
@@ -47,7 +52,7 @@ export const servicesData: Record<string, ServiceItem> = {
     subtitle: 'Transferts & mobilité',
     details: 'Navettes sur mesure pour entreprises, hôtels et événements.',
     badge: 'Navette',
-    img: 'https://www.transfert-casablanca.com/wp-content/uploads/2020/01/casablanca-eljadida3.jpg',
+    img: vans,
     link: '/services/navette',
     // MISE EN VALEUR : "navettes" et "ponctuel et serein"
     heroHeadline: 'Nous coordonnons vos <span class="highlight">navettes</span> pour un transport <span class="highlight">ponctuel et serein</span>.',
@@ -64,7 +69,7 @@ export const servicesData: Record<string, ServiceItem> = {
     subtitle: 'Organisation sur mesure',
     details: 'Événements corporates et privés avec coordination complète.',
     badge: 'Événement',
-    img: 'https://image.jimcdn.com/app/cms/image/transf/dimension=990x10000:format=png/path/scfb88433733f5430/image/i7a99615238b89f52/version/1606302716/agence-%C3%A9v%C3%A8nementielle-marketing-chloe-production-tarbes-pau-dax-auch-toulouse-bordeaux-65-64-40-32-33-31-nouvelle-aquitaine-hautes-pyrenees-atlantiques.png',
+    img: events,
     link: '/services/evenements',
     // MISE EN VALEUR : "événements" et "sans stress"
     heroHeadline: 'Nous orchestrons vos <span class="highlight">événements</span> pour vous offrir une expérience <span class="highlight">sans stress</span>.',
@@ -81,7 +86,7 @@ export const servicesData: Record<string, ServiceItem> = {
     subtitle: 'Services personnalisés',
     details: 'Accompagnement VIP pour particuliers et entreprises.',
     badge: 'Conciergerie',
-    img: 'https://www.destiny-conciergerie.net/sites/default/files/2024-08/concier2.webp',
+    img: conciergerie,
     link: '/services/conciergerie',
     // MISE EN VALEUR : "services de conciergerie" et "exclusive et fluide"
     heroHeadline: 'Nous orchestrons vos <span class="highlight">services de conciergerie</span> afin de garantir une expérience <span class="highlight">exclusive et fluide</span>.',

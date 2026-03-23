@@ -1,4 +1,7 @@
-// src/data/homeData.ts
+import vans from '../assets/images/service-mobilite.webp';
+import cars from '../assets/images/service-navette.jpg';
+import conciergerie from '../assets/images/service-conciergerie.jpeg';
+import events from '../assets/images/service-events.jpg';
 
 export interface Slide {
   id: number;
@@ -14,7 +17,7 @@ export interface Slide {
 export const homeSlides: Slide[] = [
   {
     id: 1,
-    bg: "https://img.sixt.com/2800/a58475de-1da1-429c-819e-31721300ffee.jpg",
+    bg: cars,
     tagline: "Location de voiture",
     title: "Vous cherchez un véhicule ? Vous êtes au bon endroit",
     desc: "Découvrez une large gamme de véhicules récents : économiques, premium, luxe ou SUV. ÁLDÁS vous accompagne pour tous vos déplacements.",
@@ -24,7 +27,7 @@ export const homeSlides: Slide[] = [
   },
   {
     id: 2,
-    bg: "https://www.transfert-casablanca.com/wp-content/uploads/2020/01/casablanca-eljadida3.jpg",
+    bg: vans,
     tagline: "Service de navette",
     title: "Vous cherchez un service de transfert ? Vous êtes au bon endroit",
     desc: "Profitez d'un service de transport fiable, ponctuel et discret. Nos chauffeurs formés assurent vos déplacements aéroport, hôtel et événements.",
@@ -34,7 +37,7 @@ export const homeSlides: Slide[] = [
   },
   {
     id: 3,
-    bg: "https://image.jimcdn.com/app/cms/image/transf/dimension=990x10000:format=png/path/scfb88433733f5430/image/i7a99615238b89f52/version/1606302716/agence-%C3%A9v%C3%A8nementielle-marketing-chloe-production-tarbes-pau-dax-auch-toulouse-bordeaux-65-64-40-32-33-31-nouvelle-aquitaine-hautes-pyrenees-atlantiques.png",
+    bg: events,
     tagline: "Agence événementielle",
     title: "Voulez-vous organiser un événement élégant et mémorable ?",
     desc: "Organisation complète d'événements professionnels et privés : logistique, coordination, accueil VIP et scénographie sur mesure.",
@@ -44,7 +47,7 @@ export const homeSlides: Slide[] = [
   },
   {
     id: 4,
-    bg: "https://cdn.pixabay.com/photo/2015/09/15/11/04/hotel-940730_1280.jpg",
+    bg: conciergerie,
     tagline: "Conciergerie haut de gamme",
     title: "Vous cherchez une conciergerie d'exception ?",
     desc: "Des solutions sur mesure pour répondre à vos besoins les plus exigeants : organisation, assistance, accueil VIP et coordination complète.",

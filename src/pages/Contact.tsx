@@ -130,11 +130,7 @@ const Contact = () => {
 
       {/* --- 3. FORMULAIRE SPLIT (Le cœur de la page) --- */}
       <div className="relative z-40 -mt-20">
-        <ContactFormSplit 
-          title="Une demande exclusive ?"
-          subtitle="Parlez-nous de votre projet"
-          backgroundImage="https://www.africaguestservices.com/img/agency/portfolio/carousel/AdobeStock_78477370.jpeg"
-        />
+        <ContactFormSplit />
       </div>
 
       {/* --- 4. MAP IMMERSIVE & CTA FINAL --- */}
