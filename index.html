@@ -1,13 +1,105 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr-CI">
   <head>
+    <!-- Encodage & Affichage -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="google-site-verification" content="_Ea5qEnTAq4n-Cva14pHKWLkTd-DV416CSghctnNWF4" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>aldas-ci</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+    <!-- SEO de base (fallback si JS désactivé) -->
+    <title>ÁLDÁS CI - Location, Navettes, Conciergerie & Événementiel à Abidjan</title>
+    <meta name="description" content="ÁLDÁS propose des services premium en Côte d'Ivoire : location de voitures, navettes aéroport, conciergerie haut de gamme et organisation d'événements." />
+    <meta name="keywords" content="aldas ci, location voiture abidjan, navette aéroport, conciergerie luxe, événementiel côte d'ivoire" />
+    <meta name="author" content="ÁLDÁS CI" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    
+    <!-- Canonical (sera dynamiquement mis à jour par le hook) -->
+    <link rel="canonical" href="https://www.aldas-ci.com/" />
+    
+    <!-- Open Graph / Facebook (valeurs par défaut) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ÁLDÁS CI" />
+    <meta property="og:locale" content="fr_CI" />
+    <meta property="og:title" content="ÁLDÁS CI - Services Premium à Abidjan" />
+    <meta property="og:description" content="Location de voitures, navettes, conciergerie et événementiel en Côte d'Ivoire" />
+    <meta property="og:image" content="https://www.aldas-ci.com/ogs/og-home.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://www.aldas-ci.com" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ÁLDÁS CI - Services Premium à Abidjan" />
+    <meta name="twitter:description" content="Location, navettes, conciergerie & événementiel" />
+    <meta name="twitter:image" content="https://www.aldas-ci.com/ogs/og-home.jpg" />
+    
+    <!-- Favicon & PWA -->
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <meta name="theme-color" content="#4CAF50" />
+    
+    <!-- Performance : Preconnect aux domaines externes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    
+    <!-- Polices (optionnel - si vous utilisez Google Fonts) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Schema.org de base (sera enrichi dynamiquement) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "ÁLDÁS CI",
+      "image": "https://www.aldas-ci.com/logo.jpg",
+      "url": "https://www.aldas-ci.com",
+      "telephone": "+2250747265693",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Abidjan",
+        "addressCountry": "CI"
+      },
+      "priceRange": "$$$",
+      "sameAs": [
+        "https://www.facebook.com/aldas-ci",
+        "https://www.instagram.com/aldas-ci",
+        "https://wa.me/2250747265693"
+      ]
+    }
+    </script>
   </head>
   <body>
+    <!-- Container React -->
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Entry Point -->
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- No-JS Fallback (affichage si JavaScript désactivé) -->
+    <noscript>
+      <style>
+        #root { display: none; }
+        .noscript-msg {
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: #1a365d; color: white; display: flex;
+          align-items: center; justify-content: center;
+          font-family: system-ui, sans-serif; text-align: center;
+          padding: 2rem; z-index: 9999;
+        }
+        .noscript-msg a { color: #4CAF50; text-decoration: none; }
+      </style>
+      <div class="noscript-msg">
+        <div>
+          <h1> JavaScript requis</h1>
+          <p>ÁLDÁS CI nécessite JavaScript pour fonctionner correctement.</p>
+          <p>Veuillez l'activer ou <a href="https://www.aldas-ci.com/sitemap.xml">consulter notre plan du site</a>.</p>
+        </div>
+      </div>
+    </noscript>
   </body>
 </html>

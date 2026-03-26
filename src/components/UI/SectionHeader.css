@@ -1,0 +1,76 @@
+/* src/components/UI/SectionHeader.css */
+
+/* 🎬 Animations extraites pour performance et réutilisation */
+@keyframes sectionHeaderFadeIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95) translateY(8px); 
+  }
+  to { 
+    opacity: 0.6; /* Valeur de base pour les points pairs */
+    transform: scale(1) translateY(0); 
+  }
+}
+
+@keyframes sectionHeaderAccentShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 🎯 Classes utilitaires pour le composant */
+.section-header {
+  /* Prévention du layout shift */
+  contain: layout style;
+}
+
+.section-header__title {
+  /* Amélioration du rendu texte */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.section-header__accent-shine {
+  /* Animation du reflet sur le trait */
+  animation: sectionHeaderAccentShine 2s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.group:hover .section-header__accent-shine {
+  animation-play-state: running;
+}
+
+/* 🔘 Grille de points */
+.dots-grid .dot {
+  animation: sectionHeaderFadeIn 0.4s ease-out backwards;
+  will-change: transform, opacity; /* Optimisation GPU */
+}
+
+/* 📱 Responsive : désactiver les animations sur mobile pour performance */
+@media (prefers-reduced-motion: reduce) {
+  .section-header__accent-shine,
+  .dots-grid .dot {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .dots-grid {
+    display: none !important; /* Déjà caché via hidden sm:grid, mais renforcé */
+  }
+}
+
+/* 🎨 Support des variables CSS pour la personnalisation */
+:root {
+  --section-header-color-primary: #00b894;
+  --section-header-color-text: #1e293b;
+  --section-header-color-subtext: #64748b;
+}
+
+.section-header__title {
+  color: var(--section-header-color-text, #1e293b);
+}
+
+.section-header__subtitle {
+  color: var(--section-header-color-subtext, #64748b);
+}

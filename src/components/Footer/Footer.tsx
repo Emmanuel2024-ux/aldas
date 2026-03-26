@@ -3,6 +3,7 @@ import { Phone, MessageCircle, Mail, MapPin, CarFront, Users, Stars, Gem, Facebo
 import WhatsAppFloat from './WhatsAppFloat';
 import ScrollToTop from './ScrollToTop';
 import { useState } from 'react';
+import { Link } from 'react-router-dom'; // <- Import Link
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -42,14 +43,14 @@ const Footer = () => {
             
             {/* 1. COLONNE MARQUE & NEWSLETTER */}
             <div className="lg:col-span-4 space-y-8" data-aos="fade-up" data-aos-duration="1000">
-              <a href="/" className="block w-fit group">
+              <Link to="/" className="block w-fit group">
                 <img 
                   src={footerData.brand.logo} 
                   alt="Logo ÁLDÁS" 
                   className="h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-105 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
                   itemProp="logo"
                 />
-              </a>
+              </Link>
               <p className="text-gray-400 text-sm leading-relaxed text-justify pr-2" itemProp="description">
                 {footerData.brand.description}
               </p>
@@ -85,7 +86,7 @@ const Footer = () => {
               <ul className="space-y-4">
                 {footerData.services.map((service, idx) => (
                   <li key={idx} data-aos="fade-left" data-aos-delay={200 + (idx * 50)}>
-                    <a href={service.href} className="group flex items-center gap-3 text-gray-400 hover:text-white transition-all duration-300">
+                    <Link to={service.href} className="group flex items-center gap-3 text-gray-400 hover:text-white transition-all duration-300">
                       <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-aldas group-hover:text-white transition-all duration-300 transform group-hover:rotate-3">
                         {getServiceIcon(service.icon)}
                       </span>
@@ -93,7 +94,7 @@ const Footer = () => {
                         {service.label}
                       </span>
                       <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-aldas" />
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -178,8 +179,8 @@ const Footer = () => {
               &copy; {currentYear} <span className="text-white font-semibold">{footerData.brand.name}</span>. Tous droits réservés.
             </p>
             <div className="flex items-center gap-6">
-              <a href="#" className="hover:text-white transition-colors">Mentions légales</a>
-              <a href="#" className="hover:text-white transition-colors">Confidentialité</a>
+              <Link to="#" className="hover:text-white transition-colors">Mentions légales</Link>
+              <Link to="#" className="hover:text-white transition-colors">Confidentialité</Link>
               <p className="flex items-center gap-1.5 text-gray-400">
                 Fait avec <span className="text-red-500 animate-pulse">❤️</span> par <span className="text-aldas font-bold">{footerData.brand.developedBy}</span>
               </p>

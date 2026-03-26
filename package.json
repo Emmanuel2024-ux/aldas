@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "npm run sitemap && vite build",
+    "preview": "vite preview",
+    "sitemap": "node scripts/generate-sitemap.js",
+    "seo:check": "node scripts/validate-seo.js",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext ts,tsx --fix"
   },
   "dependencies": {
     "aos": "^2.3.4",

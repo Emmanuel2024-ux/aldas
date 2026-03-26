@@ -73,12 +73,10 @@ const ServicesSection = () => {
       {/* --- HEADER --- */}
         <div data-aos="fade-up" data-aos-duration="1000">
           <SectionHeader 
-            title="Nos Services"
-            subtitle="Nous vous proposons un service de qualité !"
-            gridCols={5}
-            gridRows={2}
-            color="#00b894"
-          />
+          id="services-title"
+          title="Nos Services"
+          subtitle="Quatre pôles d'excellence pour répondre à tous vos besoins"
+        />
         </div>
       <div className="container mx-auto px-4 md:px-12 max-w-7xl relative z-10">
         

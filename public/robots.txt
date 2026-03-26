@@ -1,0 +1,27 @@
+# robots.txt pour ÁLDÁS CI
+# Dernière mise à jour: 2026-03-26
+
+User-agent: *
+Allow: /
+
+# Autoriser l'indexation des pages principales
+Allow: /services/mobilite
+Allow: /services/navette
+Allow: /services/conciergerie
+Allow: /services/evenements
+Allow: /about
+Allow: /contact
+
+# Bloquer l'administration et les APIs
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /*?sort=
+Disallow: /*?filter=
+
+# Sitemap
+Sitemap: https://www.aldas-ci.com/sitemap.xml
+
+# Crawl-delay pour les bots agressifs (optionnel)
+Crawl-delay: 10

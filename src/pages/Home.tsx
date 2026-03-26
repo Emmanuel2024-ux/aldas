@@ -1,4 +1,7 @@
 // src/pages/Home.tsx
+import { useSEO } from '../hooks/useSEO';
+import { pageSEO } from '../seo/pageSEO';
+
 import ContactFormSplit from '../components/Contact/ContactFormSplit';
 import FeaturedEventSection from '../components/Home/FeaturedEventSection';
 import HeroSlider from '../components/Home/HeroSlider';
@@ -9,15 +12,31 @@ import PartnersSlider from '../components/UI/PartnersSlider';
 import SectionHeader from '../components/UI/SectionHeader';
 
 const Home = () => {
+  // Application des meta tags SEO pour la page d'accueil
+  useSEO(pageSEO['/']);
+
   return (
-    <div className="animate-fade-in">
-      {/* 1. Le Slider Héro (Uniquement sur la page d'accueil) */}
-      <HeroSlider />
+    // Balise sémantique <main> pour le contenu principal
+    <main className="animate-fade-in" role="main" aria-label="Page d'accueil - ÁLDÁS CI">
       
+      {/* 1. Hero Slider - Section d'introduction */}
+      <section aria-labelledby="hero-title" className="relative">
+        <HeroSlider />
+        {/* Titre H1 caché visuellement mais lisible par les crawlers si HeroSlider n'en contient pas */}
+        <h1 id="hero-title" className="sr-only">
+          ÁLDÁS CI - Location de voitures, navettes, conciergerie et événementiel à Abidjan
+        </h1>
+      </section>
+      
+      {/* 2. Présentation - Qui sommes-nous */}
       <PresentationSection />
 
-      <ServicesSection />
+      {/* 3. Services - Les 4 pôles d'activité */}
+      <section aria-labelledby="services-title" className="py-12 md:py-16">
+        <ServicesSection />
+      </section>
 
+      {/* 4. Événement phare - Preuve sociale */}
       <FeaturedEventSection 
         title="Gala des 50 ans de PETROCI"
         category="Événement Corporate"
@@ -29,20 +48,31 @@ const Home = () => {
         link="/services/evenements"
       />
 
-      
-      <section className="bg-slate-50 mb-12 py-16 md:py-20">
+      {/* 5. Flotte de véhicules - Catalogue */}
+      <section 
+        aria-labelledby="flotte-title" 
+        className="bg-slate-50 mb-12 py-16 md:py-20"
+      >
         <SectionHeader 
+          id="flotte-title"
           title="Découvrez notre flotte"
           subtitle="Notre gamme de véhicules pour entreprises et particuliers"
         />
         <VehicleShowcase />
       </section>
+
+      {/* 6. Formulaire de contact - CTA principal */}
       <div className="relative z-40 -mt-20">
-        <ContactFormSplit  />
+        <ContactFormSplit />
       </div>
 
-      <PartnersSlider />
-    </div>
+      {/* 7. Partenaires - Confiance et crédibilité */}
+      <section aria-labelledby="partenaires-title" className="py-12">
+        <h2 id="partenaires-title" className="sr-only">Nos partenaires de confiance</h2>
+        <PartnersSlider />
+      </section>
+
+    </main>
   );
 };
 
