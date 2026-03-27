@@ -97,7 +97,7 @@ const RealizationsGrid = () => {
   };
 
   return (
-    <section className="py-10 md:py-18 bg-white relative overflow-hidden">
+    <section aria-label='Galerie de nos événements réalisés : mariages, séminaires, galas' id='realizations-section' className="py-10 md:py-18 bg-white relative overflow-hidden">
       {/* Déco fond subtile */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-50/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
       

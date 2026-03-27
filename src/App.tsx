@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'; // <--- 1. Import hooks
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/UI/ScrollToTop';
-import Preloader from './components/UI/Preloader'; // <--- 2. Import Preloader
+import Preloader from './components/UI/Preloader'; 
 
 // Import des Layouts
 import MainLayout from './layouts/MainLayout';

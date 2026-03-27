@@ -69,7 +69,12 @@ const Home = () => {
       {/* 7. Partenaires - Confiance et crédibilité */}
       <section aria-labelledby="partenaires-title" className="py-12">
         <h2 id="partenaires-title" className="sr-only">Nos partenaires de confiance</h2>
-        <PartnersSlider />
+        <PartnersSlider 
+          title="Nos partenaires de confiance"
+          subtitle="ÁLDÁS CI collabore avec les meilleurs acteurs pour vous offrir un service d'exception."
+          ariaLabel="Partenaires et collaborateurs d'ÁLDÁS CI - Page d'accueil"
+          id="partenaires-home"
+        />
       </section>
 
     </main>
