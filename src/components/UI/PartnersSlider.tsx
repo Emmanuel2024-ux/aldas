@@ -1,13 +1,15 @@
 // src/components/UI/PartnersSlider.tsx
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Keyboard, A11y } from 'swiper/modules';
-import { motion, type Variants } from 'framer-motion'; // ✅ Import Variants pour le typage
-import { useMemo, useCallback } from 'react';
-import 'swiper/swiper-bundle.css';
+import { motion } from 'framer-motion';
+import { useMemo, useCallback, useRef, useEffect } from 'react';
+import 'swiper/swiper.css';
 
 import SectionHeaderCentered from './SectionHeaderCenter';
 
-// --- TYPES ---
+// ============================================================================
+// 🎯 TYPES (Exportés pour réutilisation, mais pas de données exportées)
+// ============================================================================
 export interface Partner {
   id: string;
   name: string;
@@ -16,8 +18,10 @@ export interface Partner {
   description?: string;
 }
 
-// --- DONNÉES DES PARTENAIRES ---
-export const partnersData: Partner[] = [
+// ============================================================================
+// 📦 DONNÉES (Non exportées pour éviter l'erreur Fast Refresh)
+// ============================================================================
+const PARTNERS_DATA: Partner[] = [
   { id: 'partner-0', name: 'Partenaire 1', logo: '/images/partners/a.jpg', description: 'Partenaire stratégique ÁLDÁS' },
   { id: 'partner-1', name: 'Partenaire 2', logo: '/images/partners/b.jpg', description: 'Collaborateur premium' },
   { id: 'partner-2', name: 'Partenaire 3', logo: '/images/partners/c.jpg', description: 'Partenaire de confiance' },
@@ -32,8 +36,10 @@ export const partnersData: Partner[] = [
   { id: 'partner-11', name: 'Partenaire 12', logo: '/images/partners/l.jpg', description: 'Partenaire mobilité' },
 ];
 
-// ✅ VARIANTES TYÉES CORRECTEMENT
-const itemVariants: Variants = {
+// ============================================================================
+// 🎨 VARIANTES D'ANIMATION (Typées correctement pour Framer Motion)
+// ============================================================================
+const itemVariants = {
   hidden: { opacity: 0, scale: 0.85, y: 15 },
   visible: {
     opacity: 1,
@@ -46,16 +52,18 @@ const itemVariants: Variants = {
       mass: 0.1,
     },
   },
-};
+} as const;
 
-// ✅ Variante hover séparée (utilisée directement, pas via variants)
-const hoverEffect = {
+const hoverVariants = {
   scale: 1.1,
   filter: 'grayscale(0%)',
   opacity: 1,
   transition: { type: 'spring', stiffness: 300, damping: 20 },
 } as const;
 
+// ============================================================================
+// 🧩 COMPOSANT PRINCIPAL
+// ============================================================================
 interface PartnersSliderProps {
   title?: string;
   subtitle?: string;
@@ -70,16 +78,58 @@ const PartnersSlider = ({
   id = 'partenaires-slider'
 }: PartnersSliderProps) => {
   
-  const partners = useMemo(() => partnersData, []);
-
-  const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = 'image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="150" height="80" viewBox="0 0 150 80"%3E%3Crect fill="%23f1f5f9" width="150" height="80"/%3E%3Ctext fill="%2394a3b8" font-family="sans-serif" font-size="12" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3ELogo%3C/text%3E%3C/svg%3E';
-  }, []);
-
+  // ✅ Mémoïsation des données (évite les re-renders inutiles)
+  const partners = useMemo(() => PARTNERS_DATA, []);
+  
+  // ✅ Détection prefers-reduced-motion pour accessibilité
   const prefersReducedMotion = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }, []);
+
+  // ✅ Référence pour l'annonce ARIA live (évite les accès DOM directs)
+  const announcementRef = useRef<HTMLDivElement>(null);
+
+  // ✅ Handler d'erreur d'image avec fallback SVG correct
+  const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.currentTarget;
+    // ✅ Data URL correct avec préfixe "data:"
+    const fallbackSvg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="150" height="80" viewBox="0 0 150 80"%3E%3Crect fill="%23f1f5f9" width="150" height="80"/%3E%3Ctext fill="%2394a3b8" font-family="sans-serif" font-size="12" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3ELogo%3C/text%3E%3C/svg%3E';
+    target.src = fallbackSvg;
+    target.alt = `Logo non disponible pour ${target.alt}`;
+  }, []);
+
+  // ✅ Gestionnaire de changement de slide avec référence (pas d'accès DOM direct)
+  const handleSlideChange = useCallback((swiper: { realIndex: number }) => {
+    if (announcementRef.current) {
+      announcementRef.current.textContent = `Partenaire ${swiper.realIndex + 1} sur ${partners.length}`;
+    }
+  }, [partners.length]);
+
+  // ✅ Schema.org JSON-LD mémoïsé (évite les recalculs à chaque render)
+  const partnersSchema = useMemo(() => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://www.aldas-ci.com';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': 'ÁLDÁS CI',
+      'knowsAbout': 'Partenariats stratégiques',
+      'partner': partners.map(p => ({
+        '@type': 'Organization',
+        'name': p.name,
+        'description': p.description,
+        'url': p.url,
+        'logo': `${baseUrl}${p.logo.startsWith('/') ? p.logo : `/${p.logo}`}`
+      }))
+    };
+  }, [partners]);
+
+  // ✅ Effet pour initialiser l'annonce ARIA (une seule fois)
+  useEffect(() => {
+    if (announcementRef.current && partners.length > 0) {
+      announcementRef.current.textContent = `Carrousel de ${partners.length} partenaires. Utilisez les flèches du clavier pour naviguer.`;
+    }
+  }, [partners.length]);
 
   return (
     <motion.section
@@ -87,12 +137,12 @@ const PartnersSlider = ({
       className="py-16 bg-gray-50 relative overflow-hidden"
       role="region"
       aria-label={ariaLabel}
-      aria-labelledby={`${id}-heading`}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
+      {/* Background décoratif - aria-hidden */}
       <div 
         className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none"
         aria-hidden="true"
@@ -100,6 +150,7 @@ const PartnersSlider = ({
       
       <div className="container mx-auto px-4 relative z-10">
         
+        {/* Header de section avec ID pour aria-labelledby */}
         <SectionHeaderCentered
           badge="Partenaires"
           title={title}
@@ -109,6 +160,7 @@ const PartnersSlider = ({
           className="mb-8"
         />
 
+        {/* Zone de liste avec rôle ARIA */}
         <div 
           className="w-full max-w-7xl mt-12 mx-auto"
           role="list"
@@ -120,7 +172,7 @@ const PartnersSlider = ({
             slidesPerView={2}
             loop={true}
             speed={800}
-            autoplay={{
+            autoplay={prefersReducedMotion ? false : {
               delay: 2500,
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
@@ -140,14 +192,11 @@ const PartnersSlider = ({
               1200: { slidesPerView: 6, spaceBetween: 40 },
             }}
             className="pb-8"
-            onSlideChange={(swiper) => {
-              const announcement = document.getElementById(`${id}-announcement`);
-              if (announcement) {
-                announcement.textContent = `Partenaire ${swiper.realIndex + 1} sur ${partners.length}`;
-              }
-            }}
+            onSlideChange={handleSlideChange}
           >
+            {/* ✅ Annonce ARIA live en dehors du Swiper pour compatibilité */}
             <div 
+              ref={announcementRef}
               id={`${id}-announcement`} 
               className="sr-only" 
               aria-live="polite" 
@@ -155,54 +204,60 @@ const PartnersSlider = ({
             />
 
             {partners.map((partner) => (
-              <SwiperSlide key={partner.id} className="flex justify-center items-center h-24 md:h-32">
+              <SwiperSlide 
+                key={partner.id} 
+                className="flex justify-center items-center h-24 md:h-32"
+                role="listitem"
+              >
                 <motion.div
                   className="group relative w-full h-full flex items-center justify-center p-4 cursor-pointer focus:outline-none focus:ring-2 focus:ring-aldas focus:ring-offset-2 focus:ring-offset-gray-50 rounded-xl"
-                  role="listitem"
-                  // ✅ Variantes pour l'apparition
+                  // ✅ Variantes d'animation typées
                   variants={itemVariants}
                   initial="hidden"
                   animate="visible"
-                  // ✅ Hover : objet direct OU undefined (pas de référence à une variante non déclarée)
-                  whileHover={prefersReducedMotion ? undefined : hoverEffect}
-                  // ✅ Focus visible
+                  // ✅ Hover : undefined si reduced-motion, sinon les variants
+                  whileHover={prefersReducedMotion ? undefined : hoverVariants}
                   whileFocus={{ scale: 1.05, boxShadow: '0 0 0 3px rgba(6,182,212,0.3)' }}
                   transition={{ duration: 0.3 }}
                   tabIndex={0}
+                  role="button"
+                  aria-label={`${partner.name}${partner.description ? ` - ${partner.description}` : ''}${partner.url ? '. Appuyez sur Entrée pour visiter le site.' : ''}`}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if ((e.key === 'Enter' || e.key === ' ') && partner.url) {
                       e.preventDefault();
-                      if (partner.url) window.open(partner.url, '_blank', 'noopener,noreferrer');
+                      window.open(partner.url, '_blank', 'noopener,noreferrer');
                     }
                   }}
-                  title={`${partner.name}${partner.description ? ` - ${partner.description}` : ''}`}
                 >
+                  {/* Image avec fallback et accessibilité */}
                   <img
                     src={partner.logo}
                     alt={`Logo de ${partner.name}${partner.description ? `, ${partner.description}` : ''}, partenaire d'ÁLDÁS CI`}
                     loading="lazy"
                     decoding="async"
-                    width={60}
-                    height={60}
+                    width={70}
+                    height={70}
                     className="max-h-full max-w-full object-contain transition-all duration-300 ease-out filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 drop-shadow-sm group-hover:drop-shadow-md"
                     onError={handleImageError}
                   />
                   
+                  {/* Effet de lueur au hover - décoratif */}
                   <motion.div 
                     className="absolute inset-0 bg-aldas/5 rounded-xl opacity-0 group-hover:opacity-100 -z-10 blur-xl pointer-events-none"
                     aria-hidden="true"
                     initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 0.1 }}
+                    whileHover={prefersReducedMotion ? undefined : { opacity: 0.1 }}
                     transition={{ duration: 0.3 }}
                   />
 
+                  {/* Lien cliquable - tabIndex=-1 car le parent est focusable */}
                   {partner.url && (
                     <a
                       href={partner.url}
                       target="_blank"
-                      rel="noopener noreferrer external"
+                      rel="noopener noreferrer"
                       className="absolute inset-0 z-10"
-                      aria-label={`Visiter le site de ${partner.name}`}
+                      aria-hidden="true"
                       tabIndex={-1}
                     />
                   )}
@@ -212,43 +267,35 @@ const PartnersSlider = ({
           </Swiper>
         </div>
 
+        {/* ✅ Schema.org JSON-LD injecté une seule fois */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              'name': 'ÁLDÁS CI',
-              'knowsAbout': 'Partenariats stratégiques',
-              'partner': partners.map(p => ({
-                '@type': 'Organization',
-                'name': p.name,
-                'description': p.description,
-                'url': p.url,
-                'logo': `https://www.aldas-ci.com${p.logo}`
-              }))
-            })
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(partnersSchema) }}
         />
       </div>
 
+      {/* ✅ Styles CSS pour accessibilité et reduced-motion */}
       <style>{`
-        .swiper-slide:focus-within {
+        /* Focus visible pour navigation clavier */
+        [role="listitem"]:focus {
           outline: 2px solid #06b6d4;
           outline-offset: 2px;
           border-radius: 0.75rem;
         }
+        
+        /* Désactiver les animations si l'utilisateur préfère moins de mouvement */
         @media (prefers-reduced-motion: reduce) {
           .swiper-slide,
-          .swiper-slide img {
+          .swiper-slide img,
+          .group:hover img {
             transition: none !important;
             animation: none !important;
-          }
-          .group:hover img {
             transform: none !important;
             filter: grayscale(100%) !important;
           }
         }
+        
+        /* Masquer visuellement mais garder accessible */
         .sr-only {
           position: absolute;
           width: 1px;
@@ -265,4 +312,5 @@ const PartnersSlider = ({
   );
 };
 
+// ✅ Export unique du composant (évite l'erreur Fast Refresh)
 export default PartnersSlider;

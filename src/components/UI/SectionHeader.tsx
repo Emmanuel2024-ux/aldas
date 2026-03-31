@@ -1,4 +1,3 @@
-// src/components/UI/SectionHeader.tsx
 import React, { type JSX } from 'react';
 import './SectionHeader.css'; // ← Styles extraits pour performance
 
@@ -48,32 +47,31 @@ const SectionHeader = ({
   
   // Configuration de la grille
   const { rows = 2, cols = 5 } = gridConfig;
-  const totalDots = rows * cols;
   
   // Composant Titre dynamique (h2, h3, ou h4)
   const HeadingTag = `h${headingLevel}` as keyof JSX.IntrinsicElements;
 
   return (
-    // 🏷️ Header sémantique avec ARIA
+    // Header sémantique avec ARIA
     <header 
       className={`section-header w-full py-6 mb-8 group ${className}`}
       aria-labelledby={titleId}
       data-section={sectionId}
     >
-      {/* 📦 Conteneur avec marges responsives */}
+      {/* Conteneur avec marges responsives */}
       <div className="section-header__container mx-[16px] md:mx-[40px] lg:mx-[130px] relative">
         
         <div className="section-header__content flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-8 relative w-full max-w-full overflow-hidden">
           
-          {/* 👈 GROUPE GAUCHE : Trait + Titre + Sous-titre */}
+          {/* GROUPE GAUCHE : Trait + Titre + Sous-titre */}
           <div className="section-header__left flex-grow z-10 min-w-0">
             
-            {/* 🎯 Titre principal avec ID unique pour ancrage et accessibilité */}
+            {/* Titre principal avec ID unique pour ancrage et accessibilité */}
             <HeadingTag 
               id={titleId}
               className="section-header__title flex items-center gap-[clamp(10px,2.5vw,16px)] text-[clamp(1.3rem,4.5vw,2rem)] font-bold text-slate-800 leading-[1.2] tracking-tight transition-colors duration-300 group-hover:text-slate-900 flex-wrap capitalize"
             >
-              {/* ✨ Trait décoratif animé */}
+              {/* Trait décoratif animé */}
               <span 
                 className="section-header__accent relative block w-[clamp(40px,8vw,80px)] h-[clamp(4px,0.8vw,5px)] rounded-full overflow-hidden flex-shrink-0 shadow-lg"
                 style={{
@@ -84,13 +82,13 @@ const SectionHeader = ({
                 <span className="section-header__accent-shine absolute inset-0 bg-white/40 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
               </span>
               
-              {/* 📝 Texte du titre */}
+              {/* Texte du titre */}
               <span className="section-header__title-text whitespace-nowrap lg:whitespace-normal">
                 {title}
               </span>
             </HeadingTag>
 
-            {/* 📄 Sous-titre optionnel */}
+            {/* Sous-titre optionnel */}
             {subtitle && (
               <p className="section-header__subtitle mt-3 text-[clamp(0.95rem,3vw,1.1rem)] text-slate-500 font-normal leading-relaxed max-w-2xl break-words">
                 {subtitle}
@@ -98,10 +96,10 @@ const SectionHeader = ({
             )}
           </div>
 
-          {/* 👉 GROUPE DROITE : Grille décorative + Navigation */}
+          {/* GROUPE DROITE : Grille décorative + Navigation */}
           <div className="section-header__right flex items-center gap-6 shrink-0 lg:ml-auto z-20">
             
-            {/* 🔘 Grille de points décoratifs (cachée sur mobile) */}
+            {/* Grille de points décoratifs (cachée sur mobile) */}
             <DecorativeDotsGrid 
               rows={rows} 
               cols={cols} 
@@ -109,7 +107,7 @@ const SectionHeader = ({
               aria-hidden="true"
             />
 
-            {/* 🎛️ Boutons de navigation (optionnels) */}
+            {/* Boutons de navigation (optionnels) */}
             {navButtons && (
               <div className="section-header__nav flex items-center gap-3 shrink-0 pl-4 border-l border-slate-200/50">
                 {navButtons}
@@ -123,7 +121,7 @@ const SectionHeader = ({
   );
 };
 
-// 🎨 Sous-composant : Grille de points décoratifs (extrait pour lisibilité)
+// Sous-composant : Grille de points décoratifs (extrait pour lisibilité)
 interface DotsGridProps {
   rows: number;
   cols: number;
@@ -174,7 +172,7 @@ const DecorativeDotsGrid = React.memo(({ rows, cols, color, 'aria-hidden': ariaH
               target.style.transform = 'scale(1)';
               target.style.boxShadow = `0 0 8px ${color}40`;
             }}
-            // ✅ Accessibilité clavier
+            // Accessibilité clavier
             tabIndex={-1} // Non focusable car décoratif
           />
         );

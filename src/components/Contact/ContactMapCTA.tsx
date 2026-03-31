@@ -58,7 +58,7 @@ const ContactMapCTA = ({
   // ✅ États pour le chargement et les erreurs
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(false);
-  const [isInView, setIsInView] = useState(false);
+  const [, setIsInView] = useState(false);
   
   // ✅ Contrôles d'animation Framer Motion
   const controls = useAnimation();

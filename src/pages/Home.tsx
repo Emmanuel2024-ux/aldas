@@ -39,7 +39,6 @@ const Home = () => {
       {/* 4. Événement phare - Preuve sociale */}
       <FeaturedEventSection 
         title="Gala des 50 ans de PETROCI"
-        category="Événement Corporate"
         date="15 Octobre 2025"
         location="Sofitel Hôtel Ivoire, Abidjan"
         attendees="500+ Invités VIP"

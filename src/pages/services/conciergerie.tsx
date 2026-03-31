@@ -184,7 +184,7 @@ const Conciergerie = () => {
   }, []);
 
   // ✅ 4. Gestionnaire de clic pour les liens de service (accessibilité)
-  const handleServiceLinkClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, serviceName: string) => {
+  const handleServiceLinkClick = useCallback((_e: React.MouseEvent<HTMLAnchorElement>, serviceName: string) => {
     // Tracking optionnel : enregistrer le clic sur un service spécifique
     console.log(`📊 Clic sur le service : ${serviceName}`);
     // Laisser React Router gérer la navigation
@@ -219,7 +219,7 @@ const Conciergerie = () => {
         title={pageData.title}
         subtitle={pageData.heroHeadline}
         btnText="Contactez-nous"
-        btnLink="#contact-conciergerie"
+        btnLink="/contact"
         id="conciergerie-hero"
         ariaLabel="Section d'introduction - Conciergerie haut de gamme ÁLDÁS"
         imageAlt="Services de conciergerie premium ÁLDÁS à Abidjan, Côte d'Ivoire"
@@ -388,7 +388,7 @@ const Conciergerie = () => {
             role="list"
             aria-label={`Catalogue de ${conciergeServices.length} services de conciergerie`}
           >
-            {conciergeServices.map((service, idx) => (
+            {conciergeServices.map((service) => (
               <article 
                 key={service.title}
                 className="group relative bg-[#111820] rounded-2xl overflow-hidden shadow-2xl h-[360px] cursor-pointer focus-within:ring-2 focus-within:ring-emerald-400 focus-within:ring-offset-2 focus-within:ring-offset-[#0b0f14]"

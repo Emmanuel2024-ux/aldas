@@ -1,70 +1,144 @@
 // src/App.tsx
-import { useState, useEffect } from 'react'; // <--- 1. Import hooks
+import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ScrollToTop from './components/UI/ScrollToTop';
-import Preloader from './components/UI/Preloader'; 
 
-// Import des Layouts
+// ✅ Components UI
+import ScrollToTop from './components/UI/ScrollToTop';
+import Preloader from './components/UI/Preloader';
+
+// ✅ Layouts
 import MainLayout from './layouts/MainLayout';
 import PlainLayout from './layouts/PlainLayout';
 
-// Import des Pages
+// ✅ Pages principales
 import Home from './pages/Home';
 import About from './pages/About';
-import Navette from './pages/services/Navette';
-import Mobilite from './pages/services/Mobilite';
 import Contact from './pages/Contact';
-import Conciergerie from './pages/services/conciergerie';
-import Evenementiel from './pages/services/evenements';
-import Catalogue from './pages/services/Catalogue';
 import NotFound from './pages/NotFound';
 
+// ✅ Pages services (PascalCase pour cohérence)
+import Mobilite from './pages/services/Mobilite';
+import Navette from './pages/services/Navette';
+import Catalogue from './pages/services/Catalogue';
+import Evenementiel from './pages/services/evenements';
+import Conciergerie from './pages/services/conciergerie';
+import { usePageView } from './utils/analytics';
+
+
+// ============================================================================
+// 🎯 COMPOSANT WRAPPER POUR TRACKING DES PAGES
+// ============================================================================
+// Entoure chaque page pour tracker automatiquement les vues
+const PageTracker = ({ children, pageTitle }: { children: React.ReactNode; pageTitle: string }) => {
+  usePageView(window.location.pathname, pageTitle);
+  return <>{children}</>;
+};
+
+// ============================================================================
+// 🚀 COMPOSANT PRINCIPAL
+// ============================================================================
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  // Optionnel : Vérifier si le navigateur a déjà mis en cache les ressources
+  // ✅ Décaler setState pour éviter le warning React "cascade render"
   useEffect(() => {
     const hasLoadedBefore = sessionStorage.getItem('aldas-loaded');
     if (hasLoadedBefore) {
-      setIsLoading(false);
+      const timer = setTimeout(() => setIsLoading(false), 0);
+      return () => clearTimeout(timer);
     }
   }, []);
 
-  const handlePreloaderFinish = () => {
+  // ✅ Callback mémoïsé pour le preloader
+  const handlePreloaderFinish = useCallback(() => {
     setIsLoading(false);
-    sessionStorage.setItem('aldas-loaded', 'true'); // Mémoriser pour les prochaines navigations
-  };
+    sessionStorage.setItem('aldas-loaded', 'true');
+  }, []);
 
   return (
     <BrowserRouter>
+      {/* ✅ Scroll vers le haut à chaque navigation */}
       <ScrollToTop />
       
-      {/* Affichage du Preloader si isLoading est vrai */}
+      {/* ✅ Preloader global */}
       {isLoading && <Preloader onFinish={handlePreloaderFinish} />}
 
-      {/* Le reste du site n'est rendu que si le preloader est fini (optionnel, mais recommandé pour perf) */}
-      {/* Ou simplement masqué visuellement via CSS, ici on laisse rendu pour garder l'état React */}
+      {/* ✅ Contenu principal - masqué visuellement pendant le chargement */}
       <div className={isLoading ? 'invisible h-0 overflow-hidden' : 'visible'}>
         <Routes>
-          {/* --- GROUPE 1 : PAGES AVEC HEADER & FOOTER --- */}
-          <Route path="/" element={<MainLayout />}>
+          {/* ========================================================================
+              GROUPE 1 : Pages AVEC Header & Footer (MainLayout)
+              ======================================================================== */}
+          <Route 
+            element={
+              <PageTracker pageTitle="ÁLDÁS CI">
+                <MainLayout />
+              </PageTracker>
+            }
+          >
             <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
+            <Route path="about" element={
+              <PageTracker pageTitle="À propos - ÁLDÁS CI">
+                <About />
+              </PageTracker>
+            } />
+            <Route path="contact" element={
+              <PageTracker pageTitle="Contact - ÁLDÁS CI">
+                <Contact />
+              </PageTracker>
+            } />
             
+            {/* Services avec MainLayout */}
             <Route path="services">
-              <Route path="mobilite" element={<Mobilite />} />
-              <Route path="navette" element={<Navette />} />
-              <Route path="conciergerie" element={<Conciergerie />} />
-              <Route path="evenements" element={<Evenementiel />} />
+              <Route path="mobilite" element={
+                <PageTracker pageTitle="Location de Voitures - ÁLDÁS CI">
+                  <Mobilite />
+                </PageTracker>
+              } />
+              <Route path="navette" element={
+                <PageTracker pageTitle="Navettes & Transferts - ÁLDÁS CI">
+                  <Navette />
+                </PageTracker>
+              } />
+              <Route path="conciergerie" element={
+                <PageTracker pageTitle="Conciergerie Premium - ÁLDÁS CI">
+                  <Conciergerie />
+                </PageTracker>
+              } />
+              <Route path="evenements" element={
+                <PageTracker pageTitle="Agence Événementielle - ÁLDÁS CI">
+                  <Evenementiel />
+                </PageTracker>
+              } />
             </Route>
           </Route>
 
-          {/* --- GROUPE 2 : PAGES SANS HEADER & FOOTER --- */}
-          <Route path="/" element={<PlainLayout />}>
+          {/* ========================================================================
+              GROUPE 2 : Pages SANS Header & Footer (PlainLayout)
+              ======================================================================== */}
+          <Route 
+            element={
+              <PageTracker pageTitle="Catalogue - ÁLDÁS CI">
+                <PlainLayout />
+              </PageTracker>
+            }
+          >
             <Route path="services/catalogue" element={<Catalogue />} />
-            <Route path="*" element={<NotFound />} />
           </Route>
+
+          {/* ========================================================================
+              404 - Toujours avec PlainLayout (page d'erreur simple)
+              ======================================================================== */}
+          <Route 
+            path="*" 
+            element={
+              <PageTracker pageTitle="Page non trouvée - ÁLDÁS CI">
+                <PlainLayout>
+                  <NotFound />
+                </PlainLayout>
+              </PageTracker>
+            } 
+          />
         </Routes>
       </div>
     </BrowserRouter>

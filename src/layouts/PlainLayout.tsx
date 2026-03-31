@@ -1,14 +1,21 @@
 // src/layouts/PlainLayout.tsx
 import { Outlet } from 'react-router-dom';
+import type { ReactNode } from 'react';
 
-export default function PlainLayout() {
+// ✅ Interface pour les props
+interface PlainLayoutProps {
+  children?: ReactNode;
+}
+
+export default function PlainLayout({ children }: PlainLayoutProps) {
   const currentYear = new Date().getFullYear();
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Contenu Principal */}
       <main className="flex-grow">
-        <Outlet />
+        {/* ✅ Priorité : children si passé, sinon Outlet pour le routing */}
+        {children || <Outlet />}
       </main>
 
       {/* Footer Minimaliste (Copyright uniquement) */}

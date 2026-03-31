@@ -1,5 +1,5 @@
 // src/pages/services/Navette.tsx
-import { useMemo, useCallback } from 'react';
+import { useMemo, } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { useSEO } from '../../hooks/useSEO';
 import { pageSEO } from '../../seo/pageSEO';
@@ -88,15 +88,6 @@ const fadeInUp: Variants = {
   },
 };
 
-const fadeInRight: Variants = {
-  hidden: { opacity: 0, x: -40 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.7, ease: 'easeOut' },
-  },
-};
-
 const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -113,12 +104,6 @@ const Navette = () => {
   useSEO(pageSEO['/services/navette']);
   
   const pageData = servicesData['navette'];
-  
-  // ✅ 2. Détection prefers-reduced-motion
-  const prefersReducedMotion = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }, []);
 
   // ✅ 3. Schema.org JSON-LD pour TaxiService + Catalogue de navettes
   const navetteSchema = useMemo(() => {
@@ -179,11 +164,6 @@ const Navette = () => {
     };
   }, []);
 
-  // ✅ 4. Gestionnaire de clic pour tracking optionnel
-  const handlePoleLinkClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, poleTitle: string) => {
-    console.log(`📊 Pôle navette clicked: ${poleTitle}`);
-    // Laisser React Router gérer la navigation
-  }, []);
 
   return (
     // ✅ Structure sémantique principale avec ARIA et microdata

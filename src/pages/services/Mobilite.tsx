@@ -243,7 +243,7 @@ const Mobilite = () => {
   }, []);
 
   // ✅ 6. Gestionnaire de changement de slide pour annonces ARIA
-  const handleEngagementSlideChange = useCallback((swiper: any) => {
+  const handleEngagementSlideChange = useCallback((swiper: { realIndex: number }) => {
     const announcement = document.getElementById('engagements-announcement');
     if (announcement) {
       const currentEngagement = engagementsData[swiper.realIndex - 1]; // -1 car slide 0 = intro
@@ -252,10 +252,6 @@ const Mobilite = () => {
       }
     }
   }, []);
-
-  // ✅ 7. Helper pour formatage de prix (si besoin)
-  const formatPrice = useCallback((price: number) => 
-    new Intl.NumberFormat('fr-FR').format(price) + ' FCFA', []);
 
   return (
     // ✅ Structure sémantique principale avec ARIA et microdata
@@ -290,7 +286,7 @@ const Mobilite = () => {
         title={pageData.title}
         subtitle={pageData.heroHeadline}
         btnText="Réserver maintenant"
-        btnLink="/contact"
+        btnLink="#catalogue-heading"
         id="mobilite-hero"
         ariaLabel="Section d'introduction - Location de voitures premium ÁLDÁS"
         imageAlt="Flotte de véhicules premium ÁLDÁS disponible à la location à Abidjan"
@@ -664,7 +660,7 @@ const Mobilite = () => {
               whileInView="visible"
               viewport={{ once: true }}
             >
-              {rentalConditions.map((condition, idx) => (
+              {rentalConditions.map((condition) => (
                 <motion.div 
                   key={condition.number} 
                   className="group flex items-start gap-6 cursor-default"

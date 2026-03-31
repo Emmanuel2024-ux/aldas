@@ -1,10 +1,10 @@
-// src/pages/services/Catalogue.tsx
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useSEO } from '../../hooks/useSEO';
 import { pageSEO } from '../../seo/pageSEO';
 import { 
-  Search, X, SlidersHorizontal, ChevronDown, ChevronUp, AlertCircle, Calendar, Clock, User, Mail, Phone, MapPin, CreditCard, ArrowLeft, Star
+  Search, X, SlidersHorizontal, ChevronDown, ChevronUp, AlertCircle, Calendar, Clock, User, Mail, Phone, MapPin, CreditCard, ArrowLeft, Star,
+  type LucideIcon
 } from 'lucide-react';
 import VehicleCard from '../../components/Services/VehicleCard';
 import { carsData, getUniqueBrands } from '../../data/carsData';
@@ -26,9 +26,19 @@ interface CarData {
   fuelType?: string;
 }
 
+// src/pages/services/Catalogue.tsx
+// ============================================================================
+// 📦 CONSTANTES MODULE (calculées UNE FOIS au chargement)
+// ============================================================================
+
+// ✅ Calcul de la date de validité des prix : +1 an depuis le chargement du module
+const PRICE_VALID_UNTIL = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+  .toISOString()
+  .split('T')[0];
+
+
 const Catalogue = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   
   // ✅ 1. SEO : Injection des meta tags via useSEO
   useSEO(pageSEO['/services/mobilite']);
@@ -80,7 +90,7 @@ const Catalogue = () => {
       });
   }, [searchTerm, selectedBrand, maxPrice, seatsFilter, transmission, sortBy]);
 
-  // ✅ 2. Schema.org JSON-LD pour le catalogue (ItemList + Car)
+  // 2. Schema.org JSON-LD pour le catalogue (ItemList + Car)
   const catalogSchema = useMemo(() => {
     const baseUrl = 'https://www.aldas-ci.com';
     return {
@@ -94,7 +104,7 @@ const Catalogue = () => {
         '@type': 'ListItem',
         position: index + 1,
         item: {
-          '@type': 'Car',
+          '@type': 'Car', 
           '@id': `${baseUrl}/services/mobilite#${car.code}`,
           name: `${car.brand} ${car.name}`,
           description: car.description || `Location de ${car.brand} ${car.name} premium à Abidjan, Côte d'Ivoire`,
@@ -105,7 +115,7 @@ const Catalogue = () => {
             priceCurrency: 'XOF',
             availability: 'https://schema.org/InStock',
             url: `${baseUrl}/services/mobilite?clcx=${car.code}`,
-            priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+            priceValidUntil: PRICE_VALID_UNTIL
           },
           vehicleConfiguration: `${car.seats} places, ${car.doors} portes, ${car.transmission === 'A' ? 'Automatique' : 'Manuelle'}`,
           fuelType: car.fuelType || 'Essence',
@@ -134,7 +144,9 @@ const Catalogue = () => {
   useEffect(() => {
     const code = searchParams.get('clcx');
     if (code) {
-      setSelectedCarCode(code);
+      // Décaler pour éviter cascade render
+      const timer = setTimeout(() => setSelectedCarCode(code), 0);
+      return () => clearTimeout(timer);
     }
   }, [searchParams]);
 
@@ -876,7 +888,7 @@ const Catalogue = () => {
 };
 
 // --- Helpers (avec support microdata optionnel) ---
-const SpecItem = ({ icon: Icon, label, value, itemProp }: { icon: any; label: string; value: string | number; itemProp?: string }) => (
+const SpecItem = ({ icon: Icon, label, value, itemProp }: { icon: LucideIcon; label: string; value: string | number; itemProp?: string }) => (
   <div className="flex items-center gap-2 md:gap-3">
     <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 flex items-center justify-center text-emerald-400 shrink-0" aria-hidden="true">
       <Icon size={14} className="md:w-4 md:h-4" />
@@ -886,27 +898,6 @@ const SpecItem = ({ icon: Icon, label, value, itemProp }: { icon: any; label: st
       <div className="text-xs md:text-sm font-bold text-white truncate" {...(itemProp && { itemProp })}>
         {value}
       </div>
-    </div>
-  </div>
-);
-
-const InputGroup = ({ icon: Icon, label, type = "text", placeholder, required = false, id, name, ...props }: any) => (
-  <div>
-    <label htmlFor={id} className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase mb-1.5 tracking-wide">
-      {label} {required && <span className="text-red-500" aria-label="champ requis">*</span>}
-    </label>
-    <div className="relative">
-      <Icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} aria-hidden="true" />
-      <input 
-        id={id}
-        name={name}
-        type={type} 
-        placeholder={placeholder}
-        required={required}
-        className="w-full pl-10 pr-4 py-2.5 md:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-sm font-medium"
-        {...(required && { 'aria-required': 'true' })}
-        {...props}
-      />
     </div>
   </div>
 );

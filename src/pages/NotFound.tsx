@@ -1,4 +1,5 @@
-// src/pages/NotFound.tsx
+const ERROR_ID = `404_NOT_FOUND_${Math.floor(Math.random() * 9999)}`;
+
 import { useLocation, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowRight, Home, Compass } from "lucide-react";
@@ -105,7 +106,7 @@ const NotFound = () => {
         {/* Footer discret */}
         <div className="mt-20 pt-8 border-t border-white/5 text-center">
           <p className="text-xs text-gray-600 font-mono">
-            ID ERREUR: <span className="select-all cursor-pointer hover:text-red-400 transition-colors">404_NOT_FOUND_{Math.floor(Math.random() * 9999)}</span>
+            ID ERREUR: <span>{ERROR_ID}</span>
           </p>
         </div>
 

@@ -1,5 +1,5 @@
 // src/components/UI/PageHero.tsx
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
@@ -130,7 +130,6 @@ const PageHero = ({
 
   // ✅ Préparation des props du bouton selon le type de lien
   const linkType = getLinkType(btnLink);
-  const isAnchor = linkType === 'anchor';
   const isExternal = linkType === 'external';
 
   return (

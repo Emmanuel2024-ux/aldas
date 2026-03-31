@@ -4,7 +4,7 @@ import { motion, type Variants } from 'framer-motion';
 import { useSEO } from '../../hooks/useSEO';
 import { pageSEO } from '../../seo/pageSEO';
 import PageHero from '../../components/UI/PageHero';
-import ServiceGrid from '../../components/Services/ServiceGrid';
+
 import { servicesData } from '../../data/servicesData';
 import RealizationsGrid from '../../components/Events/RealizationsGrid';
 import EventSlider from '../../components/Events/EventsSlider';
@@ -186,7 +186,7 @@ const Evenementiel = () => {
           id="event-poles-section"
         />
       </motion.section>
-      
+ 
       {/* --- 5. RÉALISATIONS (avec animations) --- */}
       <motion.section
         className="py-12"
@@ -201,8 +201,8 @@ const Evenementiel = () => {
         <RealizationsGrid />
       </motion.section>
 
-      {/* --- 6. AUTRES SERVICES --- */}
-      <motion.section
+     {/* --- 6. AUTRES SERVICES --- */}
+      {/*<motion.section
         className="py-12"
         role="region"
         aria-label="Découvrez nos autres services premium"
@@ -216,7 +216,7 @@ const Evenementiel = () => {
           ariaLabel="Découvrez nos autres services : location, navettes, conciergerie"
           sectionId="autres-services-evenements"
         />
-      </motion.section>
+      </motion.section>*/}
 
       {/* ✅ Styles CSS pour accessibilité et reduced-motion */}
       <style>{`

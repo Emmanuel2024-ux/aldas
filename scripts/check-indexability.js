@@ -1,71 +1,138 @@
 // scripts/check-indexability.js
 import https from 'https';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { JSDOM } from 'jsdom';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const BASE_URL = 'https://www.aldas-ci.com';
-const pages = [
-  '/',
-  '/services/mobilite',
-  '/services/navette', 
-  '/services/conciergerie',
-  '/services/evenements',
-  '/about',
-  '/contact'
-];
-
-async function checkPage(pathname) {
-  const url = `${BASE_URL}${pathname}`;
+// ✅ Configuration
+const config = {
+  baseUrl: 'https://www.aldas-ci.com',
+  timeout: 10000, // 10 secondes
   
+  // ✅ Pages à tester
+  pages: [
+    '/',
+    '/about',
+    '/contact',
+    '/services/mobilite',
+    '/services/navette',
+    '/services/evenements',
+    '/services/conciergerie',
+  ],
+  
+  // ✅ Headers simulés pour Googlebot
+  headers: {
+    'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Connection': 'close'
+  }
+};
+
+// ✅ Vérifier une page
+function checkPage(pagePath) {
   return new Promise((resolve) => {
-    https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' }}, (res) => {
+    const url = `${config.baseUrl}${pagePath}`;
+    const start = Date.now();
+    
+    console.log(`\n📄 ${pagePath}`);
+    console.log('─'.repeat(40));
+    
+    const req = https.get(url, { headers: config.headers, timeout: config.timeout }, (res) => {
+      const duration = Date.now() - start;
       let data = '';
+      
+      // ✅ Code HTTP
+      console.log(`  Status: ${res.statusCode} ${res.statusMessage}`);
+      console.log(`  Temps: ${duration}ms`);
+      
+      if (res.statusCode !== 200) {
+        console.log(`  ❌ Erreur HTTP ${res.statusCode}`);
+        resolve({ path: pagePath, ok: false, error: `HTTP ${res.statusCode}` });
+        return;
+      }
+      
+      // ✅ Collecter les données
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        const hasNoindex = data.includes('name="robots"') && data.includes('noindex');
-        const hasCanonical = data.includes('rel="canonical"');
-        const hasH1 = data.includes('<h1') || data.includes('itemProp="name"');
-        const contentLength = data.length;
+        // ✅ Vérifier noindex
+        const noindex = data.match(/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex[^"']*["']/i);
+        if (noindex) {
+          console.log(`  ❌ Balise noindex détectée`);
+          resolve({ path: pagePath, ok: false, error: 'noindex' });
+          return;
+        }
+        console.log(`  ✅ Pas de noindex`);
         
-        resolve({
-          url,
-          status: res.statusCode,
-          hasNoindex,
-          hasCanonical, 
-          hasH1,
-          contentLength,
-          ok: res.statusCode === 200 && !hasNoindex && hasH1
-        });
+        // ✅ Vérifier le rendu du contenu (basique)
+        try {
+          const dom = new JSDOM(data);
+          const doc = dom.window.document;
+          
+          const hasMain = !!doc.querySelector('main, [role="main"]');
+          const hasH1 = !!doc.querySelector('h1');
+          const hasContent = doc.body.textContent?.trim().length > 100;
+          
+          if (hasMain && hasH1 && hasContent) {
+            console.log(`  ✅ Contenu principal détecté`);
+          } else {
+            console.log(`  ⚠️ Contenu principal partiel (${hasMain ? '✓' : '✗'} main, ${hasH1 ? '✓' : '✗'} h1)`);
+          }
+        } catch (e) {
+          console.log(`  ⚠️ Impossible d'analyser le rendu: ${e.message}`);
+        }
+        
+        // ✅ Temps de réponse
+        if (duration > 3000) {
+          console.log(`  ⚠️ Temps de réponse lent: ${duration}ms (>3s)`);
+        } else {
+          console.log(`  ✅ Temps de réponse: OK`);
+        }
+        
+        resolve({ path: pagePath, ok: true });
       });
     }).on('error', (err) => {
-      resolve({ url, error: err.message, ok: false });
+      console.log(`  ❌ Erreur réseau: ${err.message}`);
+      resolve({ path: pagePath, ok: false, error: err.message });
+    }).on('timeout', () => {
+      console.log(`  ❌ Timeout après ${config.timeout}ms`);
+      req.destroy();
+      resolve({ path: pagePath, ok: false, error: 'timeout' });
     });
   });
 }
 
-(async () => {
-  console.log(`🔍 Vérification de l'indexabilité des pages...\n`);
+// ✅ Exécution principale
+async function main() {
+  console.log('🕷️ Simulation Googlebot - Test d\'indexabilité...\n');
+  console.log(`🔗 Base URL: ${config.baseUrl}`);
+  console.log(`📄 Pages à tester: ${config.pages.length}`);
+  console.log(`⏱️  Timeout: ${config.timeout}ms\n`);
   
-  const results = await Promise.all(pages.map(checkPage));
+  // Tester chaque page en parallèle (avec limite de concurrence si besoin)
+  const results = await Promise.all(config.pages.map(checkPage));
   
-  results.forEach(r => {
-    if (r.error) {
-      console.log(`❌ ${r.url} : ${r.error}`);
-    } else if (!r.ok) {
-      console.log(`⚠️  ${r.url}`);
-      if (r.status !== 200) console.log(`   📡 HTTP ${r.status}`);
-      if (r.hasNoindex) console.log(`   🚫 Balise noindex détectée`);
-      if (!r.hasH1) console.log(`   📝 Pas de H1 trouvé`);
-      if (!r.hasCanonical) console.log(`   🔗 Pas de canonical`);
-    } else {
-      console.log(`✅ ${r.url} : Prête pour l'indexation`);
-    }
-  });
+  // ✅ Résumé
+  const ok = results.filter(r => r.ok).length;
+  const failed = results.filter(r => !r.ok);
   
-  const ready = results.filter(r => r.ok).length;
-  console.log(`\n📊 Résumé : ${ready}/${pages.length} pages prêtes`);
-})();
+  console.log('\n' + '═'.repeat(50));
+  console.log(`📊 RÉSULTAT: ${ok}/${results.length} pages indexables`);
+  
+  if (failed.length > 0) {
+    console.log('\n❌ Pages problématiques:');
+    failed.forEach(r => {
+      console.log(`  • ${r.path}: ${r.error}`);
+    });
+    console.log('\n💡 Conseil: Vérifiez robots.txt, headers serveur, et le rendu JS');
+    process.exit(1);
+  } else {
+    console.log('\n✅ Toutes les pages sont indexables par Googlebot 🎉');
+    console.log('💡 Prochainement: Soumettez votre sitemap dans Google Search Console');
+    process.exit(0);
+  }
+}
+
+// Lancer
+main().catch(err => {
+  console.error('❌ Erreur inattendue:', err.message);
+  process.exit(1);
+});

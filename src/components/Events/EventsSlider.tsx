@@ -80,7 +80,7 @@ const EventSlider = ({
   }, []);
 
   // ✅ Gestionnaire de changement de slide pour annonces ARIA
-  const handleSlideChange = useCallback((swiper: any) => {
+  const handleSlideChange = useCallback((swiper: { realIndex: number }) => {
     const announcement = document.getElementById(`${id}-announcement`);
     if (announcement) {
       const currentSlide = memoizedSlides[swiper.realIndex];

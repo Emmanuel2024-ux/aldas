@@ -1,180 +1,368 @@
 // src/components/UI/EventLightbox.tsx
-import { useEffect, useState } from 'react';
+// ============================================================================
+// 🎯 LIGHTBOX GALERIE ÉVÉNEMENT - ÁLDÁS CI
+// ============================================================================
+// • Icônes Lucide responsives avec Tailwind (w-* h-*)
+// • TypeScript strict : interfaces exportées, pas de any
+// • Focus trap WCAG 2.1 : navigation Tab cyclique
+// • Schema.org ImageObject pour chaque image
+// • Accessibilité : ARIA live, navigation clavier, reduced-motion
+// • Performance : memoization, decoding async, will-change
+// ============================================================================
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, Info, Calendar, MapPin, Users } from 'lucide-react';
 
-interface ImageItem {
+// ============================================================================
+// 🎯 TYPES EXPORTÉS
+// ============================================================================
+
+export interface GalleryImageMeta {
+  label: string;
+  value: string;
+}
+
+export interface GalleryImage {
   src: string;
   alt: string;
   title: string;
   description: string;
-  meta?: { label: string; value: string }[]; // Infos supplémentaires optionnelles
+  meta?: GalleryImageMeta[];
 }
 
-interface EventLightboxProps {
-  images: ImageItem[];
+export interface EventLightboxProps {
+  images: GalleryImage[];
   isOpen: boolean;
   onClose: () => void;
   initialIndex?: number;
   eventTitle?: string;
+  id?: string;
+  ariaLabel?: string;
 }
 
-const EventLightbox = ({ images, isOpen, onClose, initialIndex = 0, eventTitle }: EventLightboxProps) => {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [, setDirection] = useState(0); // -1 gauche, 1 droite
-  const [isInfoOpen, setIsInfoOpen] = useState(true);
+// ============================================================================
+// 🧩 COMPOSANT PRINCIPAL
+// ============================================================================
 
-  // Reset index quand la lightbox s'ouvre
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentIndex(initialIndex);
-      setIsInfoOpen(true);
-      document.body.style.overflow = 'hidden'; // Bloquer le scroll du body
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    return () => { document.body.style.overflow = 'auto'; };
-  }, [isOpen, initialIndex]);
+const EventLightbox = ({
+  images,
+  isOpen,
+  onClose,
+  initialIndex = 0,
+  eventTitle = 'Galerie Événement',
+  id = 'event-lightbox',
+  ariaLabel = 'Galerie photos de l\'événement',
+}: EventLightboxProps) => {
+  // ✅ États
+  const [currentIndex, setCurrentIndex] = useState<number>(initialIndex);
+  const [isInfoOpen, setIsInfoOpen] = useState<boolean>(true);
+  const [hasLoaded, setHasLoaded] = useState<boolean>(false);
 
-  // Navigation Clavier
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft') navigate(-1);
-      if (e.key === 'ArrowRight') navigate(1);
-      if (e.key === 'i') setIsInfoOpen(prev => !prev);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, currentIndex]);
+  // ✅ Références
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const infoToggleRef = useRef<HTMLButtonElement>(null);
+  const prevButtonRef = useRef<HTMLButtonElement>(null);
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
 
-  const navigate = (dir: number) => {
-    setDirection(dir);
-    setCurrentIndex((prev) => {
-      if (dir === -1) return prev === 0 ? images.length - 1 : prev - 1;
+  // ✅ prefers-reduced-motion
+  const prefersReducedMotion = useMemo<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }, []);
+
+  // ✅ Image courante
+  const currentImage = useMemo<GalleryImage | undefined>(() => images[currentIndex], [images, currentIndex]);
+
+  // ✅ Navigation
+  const navigate = useCallback((direction: number): void => {
+    setCurrentIndex((prev: number): number => {
+      if (direction < 0) return prev === 0 ? images.length - 1 : prev - 1;
       return prev === images.length - 1 ? 0 : prev + 1;
     });
-  };
+  }, [images.length]);
+
+  // ✅ Gestion scroll body
+  useEffect(() => {
+    if (!isOpen) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    
+    const timer = setTimeout(() => {
+      setCurrentIndex(initialIndex);
+      setIsInfoOpen(true);
+      setHasLoaded(false);
+      closeButtonRef.current?.focus();
+      const t = setTimeout(() => setHasLoaded(true), 50);
+      return () => clearTimeout(t);
+    }, 10);
+    
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = original;
+    };
+  }, [isOpen, initialIndex]);
+
+  // ✅ Focus trap
+  useEffect(() => {
+    if (!isOpen || !lightboxRef.current) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const elements = lightboxRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!elements || elements.length === 0) return;
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [isOpen]);
+
+  // ✅ Navigation clavier
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'Escape': e.preventDefault(); onClose(); break;
+        case 'ArrowLeft': e.preventDefault(); navigate(-1); break;
+        case 'ArrowRight': e.preventDefault(); navigate(1); break;
+        case 'i': case 'I': e.preventDefault(); setIsInfoOpen(p => !p); break;
+      }
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose, navigate]);
+
+  // ✅ Handlers
+  const handlePrev = useCallback((e: React.MouseEvent) => { e.stopPropagation(); navigate(-1); }, [navigate]);
+  const handleNext = useCallback((e: React.MouseEvent) => { e.stopPropagation(); navigate(1); }, [navigate]);
+  const handleThumb = useCallback((i: number) => setCurrentIndex(i), []);
+  const handleOverlay = useCallback((e: React.MouseEvent) => { if (e.target === e.currentTarget) onClose(); }, [onClose]);
+
+  // ✅ Schema.org
+  const imageSchema = useMemo(() => {
+    if (!currentImage) return null;
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://www.aldas-ci.com';
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'ImageObject',
+      '@id': `${base}/gallery/${currentImage.title.toLowerCase().replace(/\s+/g, '-')}`,
+      contentUrl: currentImage.src,
+      url: currentImage.src,
+      name: currentImage.title,
+      description: currentImage.description,
+      caption: currentImage.alt,
+      representativeOfPage: 'False',
+      image: { '@type': 'ImageObject', url: currentImage.src, width: 1200, height: 800 }
+    };
+  }, [currentImage]);
+
+  // ✅ ARIA announcement
+  const announcement = useMemo(() => 
+    currentImage ? `Image ${currentIndex + 1} sur ${images.length} : ${currentImage.title}. ${currentImage.description}` : '',
+    [currentImage, currentIndex, images.length]
+  );
 
   if (!isOpen) return null;
 
-  const currentImage = images[currentIndex];
+  // ✅ Classes utilitaires pour icônes responsives
+  const iconClass = "flex-shrink-0 text-white";
+  const iconSm = "w-5 h-5 sm:w-6 sm:h-6";
+  const iconLg = "w-6 h-6 sm:w-8 sm:h-8";
+  const iconMeta = "w-4 h-4 sm:w-[18px] sm:h-[18px]";
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
-      
-      {/* Bouton Fermer */}
-      <button 
-        onClick={onClose}
-        className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md transition-all duration-300 hover:rotate-90"
-        aria-label="Fermer"
+    <>
+      {imageSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageSchema) }} />
+      )}
+
+      <div
+        ref={lightboxRef}
+        id={id}
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${id}-title`}
+        aria-describedby={`${id}-description`}
+        aria-label={ariaLabel}
+        onClick={handleOverlay}
+        style={{ animation: prefersReducedMotion ? 'none' : 'fadeIn 300ms ease-out' }}
       >
-        <X size={24} />
-      </button>
+        <div className="sr-only" aria-live="polite" aria-atomic="true">{announcement}</div>
 
-      {/* Bouton Toggle Info (Mobile/Desktop) */}
-      <button 
-        onClick={() => setIsInfoOpen(!isInfoOpen)}
-        className={`absolute top-6 left-6 z-50 p-3 rounded-full border backdrop-blur-md transition-all duration-300 ${isInfoOpen ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
-        aria-label="Toggle Infos"
-      >
-        <Info size={24} />
-      </button>
-
-      {/* Conteneur Principal Grid */}
-      <div className="w-full h-full flex flex-col lg:flex-row overflow-hidden">
-        
-        {/* Zone Image (Gauche/Center) */}
-        <div className="relative flex-grow h-[60vh] lg:h-full flex items-center justify-center bg-black overflow-hidden group">
-          
-          {/* Navigation Flèches (Survol Image) */}
-          <button 
-            onClick={(e) => { e.stopPropagation(); navigate(-1); }}
-            className="absolute left-4 lg:left-8 z-40 p-4 rounded-full bg-black/20 hover:bg-emerald-600 text-white border border-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 translate-x-[-20px] group-hover:translate-x-0 transition-all duration-300"
-          >
-            <ChevronLeft size={32} />
-          </button>
-          
-          <button 
-            onClick={(e) => { e.stopPropagation(); navigate(1); }}
-            className="absolute right-4 lg:right-8 z-40 p-4 rounded-full bg-black/20 hover:bg-emerald-600 text-white border border-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 translate-x-[20px] group-hover:translate-x-0 transition-all duration-300"
-          >
-            <ChevronRight size={32} />
-          </button>
-
-          {/* Image Active avec Animation de Glissement */}
-          <div className="relative w-full h-full flex items-center justify-center p-4 lg:p-12">
-            <img 
-              key={currentImage.src} // Key force re-render pour l'animation
-              src={currentImage.src} 
-              alt={currentImage.alt}
-              className="max-w-full max-h-full object-contain shadow-2xl animate-in zoom-in-95 duration-500 ease-out"
-            />
-          </div>
-
-          {/* Indicateur de Progression (Bas) */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-40">
-            <span className="text-xs font-mono text-white/60 bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
-              {String(currentIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
-            </span>
-          </div>
-        </div>
-
-        {/* Panneau d'Information (Droite) - Glassmorphism */}
-        <div 
-          className={`absolute lg:relative inset-y-0 right-0 w-full lg:w-[400px] bg-[#0f172a]/90 backdrop-blur-xl border-l border-white/10 transform transition-transform duration-500 ease-in-out z-30 flex flex-col ${isInfoOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-[calc(100%-60px)] lg:hidden'}`}
+        {/* Bouton Fermer */}
+        <button
+          ref={closeButtonRef}
+          onClick={onClose}
+          className="absolute top-4 sm:top-6 right-4 sm:right-6 z-50 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md transition-all duration-200 hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+          aria-label="Fermer la galerie"
+          type="button"
         >
-          {/* Header Panneau */}
-          <div className="p-8 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
-            <h3 className="text-xs font-bold tracking-[0.2em] text-emerald-400 uppercase mb-2">{eventTitle || 'Galerie Événement'}</h3>
-            <h2 className="text-2xl font-bold text-white leading-tight">{currentImage.title}</h2>
-          </div>
+          <X className={`${iconSm} ${iconClass}`} aria-hidden="true" />
+          <span className="sr-only">Fermer</span>
+        </button>
 
-          {/* Contenu Scrollable */}
-          <div className="flex-grow overflow-y-auto p-8 space-y-8 custom-scrollbar">
+        {/* Bouton Toggle Info */}
+        <button
+          ref={infoToggleRef}
+          onClick={() => setIsInfoOpen(!isInfoOpen)}
+          className={`absolute top-4 sm:top-6 left-4 sm:left-6 z-50 p-2.5 sm:p-3 rounded-full border backdrop-blur-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black ${
+            isInfoOpen ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+          }`}
+          aria-label={isInfoOpen ? 'Masquer les informations' : 'Afficher les informations'}
+          aria-expanded={isInfoOpen}
+          aria-controls={`${id}-info-panel`}
+          type="button"
+        >
+          <Info className={`${iconSm} ${iconClass}`} aria-hidden="true" />
+          <span className="sr-only">Infos</span>
+        </button>
+
+        <div className="w-full h-full flex flex-col lg:flex-row overflow-hidden">
+          
+          {/* Zone Image */}
+          <div className="relative flex-grow h-[50vh] sm:h-[60vh] lg:h-full flex items-center justify-center bg-black overflow-hidden" role="region" aria-label="Zone de visualisation des images">
             
-            {/* Description Photo */}
-            <div>
-              <p className="text-gray-300 leading-relaxed font-light text-lg">{currentImage.description}</p>
+            {/* Bouton Précédent */}
+            <button
+              ref={prevButtonRef}
+              onClick={handlePrev}
+              className="absolute left-3 sm:left-4 lg:left-8 z-40 p-3 sm:p-4 rounded-full bg-black/30 hover:bg-emerald-600 text-white border border-white/10 backdrop-blur-sm opacity-90 hover:opacity-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              aria-label="Image précédente"
+              type="button"
+            >
+              <ChevronLeft className={`${iconLg} ${iconClass}`} aria-hidden="true" />
+              <span className="sr-only">Précédent</span>
+            </button>
+            
+            {/* Bouton Suivant */}
+            <button
+              ref={nextButtonRef}
+              onClick={handleNext}
+              className="absolute right-3 sm:right-4 lg:right-8 z-40 p-3 sm:p-4 rounded-full bg-black/30 hover:bg-emerald-600 text-white border border-white/10 backdrop-blur-sm opacity-90 hover:opacity-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              aria-label="Image suivante"
+              type="button"
+            >
+              <ChevronRight className={`${iconLg} ${iconClass}`} aria-hidden="true" />
+              <span className="sr-only">Suivant</span>
+            </button>
+
+            {/* Image */}
+            <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-6 lg:p-12">
+              {hasLoaded && currentImage && (
+                <img
+                  key={currentImage.src}
+                  src={currentImage.src}
+                  alt={currentImage.alt}
+                  className="max-w-full max-h-full object-contain shadow-2xl"
+                  loading="eager"
+                  decoding="async"
+                  width={1200}
+                  height={800}
+                  style={{ animation: prefersReducedMotion ? 'none' : 'zoomIn 400ms ease-out', willChange: 'transform, opacity' }}
+                />
+              )}
             </div>
 
-            {/* Métadonnées (Date, Lieu, etc.) */}
-            {currentImage.meta && currentImage.meta.length > 0 && (
-              <div className="space-y-4">
-                <h4 className="text-sm font-bold text-white/50 uppercase tracking-wider border-b border-white/10 pb-2">Détails</h4>
-                {currentImage.meta.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    {item.label.includes('Date') && <Calendar size={18} className="text-emerald-400 mt-1 shrink-0" />}
-                    {item.label.includes('Lieu') && <MapPin size={18} className="text-emerald-400 mt-1 shrink-0" />}
-                    {item.label.includes('Invités') && <Users size={18} className="text-emerald-400 mt-1 shrink-0" />}
-                    <div>
-                      <span className="block text-xs text-gray-400 uppercase tracking-wide">{item.label}</span>
-                      <span className="block text-sm font-semibold text-white">{item.value}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Progression */}
+            <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 z-40">
+              <span className="text-[10px] sm:text-xs font-mono text-white/70 bg-black/40 px-2.5 sm:px-3 py-1 rounded-full backdrop-blur-sm border border-white/10" aria-live="polite">
+                {currentIndex + 1} / {images.length}
+              </span>
+            </div>
+          </div>
 
-            {/* Miniatures Rapides (Optionnel) */}
-            <div className="pt-4">
-              <h4 className="text-xs font-bold text-white/50 uppercase tracking-wider mb-3">Autres vues</h4>
-              <div className="grid grid-cols-3 gap-2">
-                {images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentIndex(idx)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${idx === currentIndex ? 'border-emerald-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                  >
-                    <img src={img.src} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
+          {/* Panneau Info */}
+          <div
+            id={`${id}-info-panel`}
+            className={`absolute lg:relative inset-y-0 right-0 w-full lg:w-[360px] xl:w-[400px] bg-slate-900/95 backdrop-blur-xl border-l border-white/10 transform transition-transform duration-300 ease-out z-30 flex flex-col ${
+              isInfoOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-[calc(100%-50px)] lg:hidden'
+            }`}
+            role="complementary"
+            aria-label="Informations sur l'image"
+          >
+            {/* Header */}
+            <div className="p-5 sm:p-6 md:p-8 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
+              <h3 id={`${id}-title`} className="text-[10px] sm:text-xs font-bold tracking-wider text-emerald-400 uppercase mb-1.5 sm:mb-2">{eventTitle}</h3>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight">{currentImage?.title}</h2>
+            </div>
+
+            {/* Contenu */}
+            <div className="flex-grow overflow-y-auto p-5 sm:p-6 md:p-8 space-y-5 sm:space-y-6 md:space-y-8 custom-scrollbar">
+              
+              {/* Description */}
+              <div id={`${id}-description`}>
+                <p className="text-slate-300 leading-relaxed font-light text-sm sm:text-base md:text-lg">{currentImage?.description}</p>
+              </div>
+
+              {/* Métadonnées - ICÔNES CORRIGÉES */}
+              {currentImage?.meta && currentImage.meta.length > 0 && (
+                <div className="space-y-3 sm:space-y-4">
+                  <h4 className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-white/10 pb-1.5 sm:pb-2">Détails</h4>
+                  {currentImage.meta.map((item: GalleryImageMeta, idx: number) => (
+                    <div key={idx} className="flex items-start gap-2.5 sm:gap-3">
+                      <span className="mt-0.5 sm:mt-1 text-emerald-400" aria-hidden="true">
+                        {item.label.includes('Date') && <Calendar className={`${iconMeta} text-emerald-400`} />}
+                        {item.label.includes('Lieu') && <MapPin className={`${iconMeta} text-emerald-400`} />}
+                        {item.label.includes('Invités') && <Users className={`${iconMeta} text-emerald-400`} />}
+                        {!item.label.match(/Date|Lieu|Invités/) && <span className="w-4 h-4 sm:w-[18px] sm:h-[18px] block" />}
+                      </span>
+                      <div>
+                        <span className="block text-[10px] sm:text-xs text-slate-400 uppercase tracking-wide">{item.label}</span>
+                        <span className="block text-sm font-semibold text-white">{item.value}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Miniatures */}
+              <div className="pt-2 sm:pt-4">
+                <h4 className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 sm:mb-3">Autres vues</h4>
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                  {images.map((img: GalleryImage, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleThumb(idx)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleThumb(idx); } }}
+                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900 ${
+                        idx === currentIndex ? 'border-emerald-500 scale-105 ring-2 ring-emerald-400/50' : 'border-transparent opacity-60 hover:opacity-100 hover:border-white/30'
+                      }`}
+                      aria-label={`Miniature ${idx + 1} : ${img.title}`}
+                      aria-current={idx === currentIndex ? 'true' : 'false'}
+                      type="button"
+                    >
+                      <img src={img.src} alt="" className="w-full h-full object-cover" loading="lazy" decoding="async" aria-hidden="true" />
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Styles */}
+        <style>{`
+          @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+          @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; transform: none !important; } }
+          .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+          .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+          .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 2px; }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
+          .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+        `}</style>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { homeSlides } from '../../data/homeData'; // Suppression de 'type Slide' car non utilisé directement
@@ -9,18 +9,19 @@ const HeroSlider = () => {
   const [isHovering, setIsHovering] = useState(false);
 
   // Autoplay avec pause au survol
+  const nextSlide = useCallback(() => {
+    setCurrent((prev) => (prev === homeSlides.length - 1 ? 0 : prev + 1)); 
+  }, []);
+
   useEffect(() => {
     const timer = setInterval(() => {
       if (!isHovering) {
-        nextSlide();
+        nextSlide(); // ✅ nextSlide est stable grâce à useCallback
       }
     }, 7000);
     return () => clearInterval(timer);
-  }, [current, isHovering]);
-
-  const nextSlide = () => {
-    setCurrent((prev) => (prev === homeSlides.length - 1 ? 0 : prev + 1));
-  };
+  }, [isHovering, nextSlide]);
+  
 
   const prevSlide = () => {
     setCurrent((prev) => (prev === 0 ? homeSlides.length - 1 : prev - 1));

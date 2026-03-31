@@ -49,7 +49,7 @@ const VehicleShowcase = () => {
   const announcementRef = useRef<HTMLDivElement>(null);
 
   // ✅ Gestionnaire de changement de slide pour annonces accessibles
-  const handleSlideChange = useCallback((swiper: any) => {
+  const handleSlideChange = useCallback((swiper: unknown) => {
     if (announcementRef.current) {
       const currentIndex = swiper.realIndex + 1;
       const totalSlides = randomCars.length + 1; // +1 pour le slide "Catalogue"

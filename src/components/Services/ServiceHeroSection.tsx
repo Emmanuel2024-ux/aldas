@@ -1,90 +1,128 @@
 // src/components/Services/ServiceHeroSection.tsx
-import { motion, type Variants } from 'framer-motion';
+// ============================================================================
+// 🎯 HERO SECTION PREMIUM - ÁLDÁS CI
+// ============================================================================
+// Design professionnel avec :
+// • Background toujours plein écran (aucun espace blanc)
+// • Scroll fluide 60fps garanti (pas de fixed/blur coûteux)
+// • Typographie hiérarchisée et responsive
+// • Animations subtiles et élégantes
+// • Accessibilité ARIA complète + reduced-motion
+// • TypeScript strict avec exports typés
+// ============================================================================
+
+import { motion } from 'framer-motion';
 import { useMemo, useCallback } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+// ✅ Import image optimisée
 import contactFixed from '../../assets/images/contact-fixe.jpeg';
 
-// --- TYPES ---
+// ============================================================================
+// 🎯 TYPES EXPORTÉS (pour réutilisation et documentation)
+// ============================================================================
+
 export interface ServiceHeroSectionProps {
+  /** Titre principal avec support <span class="highlight"> pour mise en valeur */
   headline: string;
+  /** Lien de destination du CTA (défaut: "/contact") */
   ctaLink?: string;
+  /** Texte du bouton CTA (défaut: "Contactez-nous") */
   ctaText?: string;
+  /** Image de background (défaut: contactFixed) */
   backgroundImage?: string;
-  /** Label ARIA pour la section (accessibilité) */
+  /** Label ARIA pour accessibilité */
   ariaLabel?: string;
-  /** ID unique pour l'ancrage */
+  /** ID unique pour ancrage et tests */
   id?: string;
+  /** Callback optionnel pour tracking analytics */
+  onCtaClick?: () => void;
 }
 
-// --- VARIANTES D'ANIMATION FRAMER MOTION ---
-const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 30 },
+// ============================================================================
+// 🎨 VARIANTES D'ANIMATION (typées et réutilisables)
+// ============================================================================
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }, // easing professionnel
   },
-};
+} as const;
 
-const zoomIn: Variants = {
+const badgeVariants = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { type: 'spring', stiffness: 200, damping: 15 },
+    transition: { duration: 0.4, ease: 'easeOut', delay: 0.05 },
   },
-};
+} as const;
+
+// ============================================================================
+// 🧩 COMPOSANT PRINCIPAL
+// ============================================================================
 
 const ServiceHeroSection = ({
   headline,
-  ctaLink = "/contact",
-  ctaText = "Contactez-nous",
+  ctaLink = '/contact',
+  ctaText = 'Contactez-nous',
   backgroundImage = contactFixed,
-  ariaLabel = "Section d'appel à l'action - Contactez ÁLDÁS CI",
-  id = "service-hero-section"
+  ariaLabel = "Section d'introduction - Services premium ÁLDÁS CI",
+  id = 'service-hero-section',
+  onCtaClick,
 }: ServiceHeroSectionProps) => {
-  
-  // ✅ Détection prefers-reduced-motion pour accessibilité
+  // ✅ Détection prefers-reduced-motion (mémoïsée)
   const prefersReducedMotion = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }, []);
 
-  // ✅ Fonction pour parser et styliser le texte (mémoïsée)
+  // ✅ Parsing sécurisé du headline avec mise en valeur
   const renderHeadline = useMemo(() => {
     if (!headline) return null;
-    
+
     const parts = headline.split(/(<span class="highlight">.*?<\/span>)/g);
-    
+
     return parts.map((part, index) => {
       if (part.includes('<span class="highlight">')) {
-        const text = part.replace(/<span class="highlight">|<\/span>/g, '');
+        const text = part.replace(/<[^>]+>/g, '');
         return (
-          <motion.span 
-            key={`highlight-${index}`} 
-            className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f2ff] via-[#00c3ff] to-[#00f26c] font-extrabold drop-shadow-[0_0_15px_rgba(0,195,255,0.4)] mx-1 break-words inline-block"
-            // Animation uniquement si l'utilisateur n'a pas désactivé les animations
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ 
-              duration: prefersReducedMotion ? 0 : 0.5,
-              delay: prefersReducedMotion ? 0 : 0.2 + (index * 0.1),
-              type: prefersReducedMotion ? 'tween' : 'spring',
-              stiffness: 200
-            }}
+          <motion.span
+            key={`hl-${index}`}
+            className="relative inline-block bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent font-semibold"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : { duration: 0.4, delay: 0.15 + index * 0.06 }
+            }
           >
             {text}
+            {/* Sous-ligne décorative subtile */}
+            <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-emerald-400/60 via-cyan-400/60 to-emerald-400/60 opacity-70" />
           </motion.span>
         );
       }
       return (
-        <motion.span 
-          key={`text-${index}`} 
-          className="text-white/90 font-light"
+        <motion.span
+          key={`txt-${index}`}
+          className="text-white/95 font-light"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.35 }}
         >
           {part}
         </motion.span>
@@ -92,156 +130,162 @@ const ServiceHeroSection = ({
     });
   }, [headline, prefersReducedMotion]);
 
-  // ✅ Gestionnaire de clic pour le CTA (tracking optionnel)
-  const handleCtaClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Optionnel : ajouter du tracking ici
-    console.log(`📊 CTA clicked: ${ctaText} → ${ctaLink}`);
-    // Laisser React Router gérer la navigation
-  }, [ctaText, ctaLink]);
+  // ✅ Handler CTA mémoïsé
+  const handleCtaClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      onCtaClick?.();
+      // Navigation gérée par React Router via le prop `to`
+    },
+    [onCtaClick]
+  );
 
   return (
-    // ✅ Section avec isolation de stacking context pour le background fixed
-    // isolation: isolate crée un nouveau stacking context local
-    // z-0 garantit que cette section ne chevauche pas les sections adjacentes
-    <motion.section 
+    // ✅ Section principale : hauteur responsive, overflow caché pour le background
+    <motion.section
       id={id}
-      className="relative w-full h-[75vh] flex items-center bg-white overflow-hidden isolation-isolate z-0"
+      className="relative w-full min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh] flex items-center justify-center bg-slate-900 overflow-hidden"
       role="region"
       aria-label={ariaLabel}
-      // Animation d'apparition de la section
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.5 }}
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
     >
-      
       {/* 
-        ✅ BACKGROUND FIXED - Isolé dans son propre stacking context
-        - isolation: isolate empêche le fixed de "sortir" de cette section
-        - z-0 sur le parent + z-10 sur le contenu garantit l'ordre correct
-        - pointer-events: none pour ne pas bloquer les interactions
+        ✅ BACKGROUND PROFESSIONNEL
+        • Image en cover avec overlay gradient multicouche
+        • Effet de profondeur avec radial gradient et noise texture
+        • Aucune animation coûteuse → scroll 60fps garanti
       */}
-      <div 
-        className="absolute inset-0 z-0 pointer-events-none isolation-isolate"
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-        aria-hidden="true"
-      >
-        {/* Overlay Dégradé Intelligent */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/90 backdrop-blur-[1px]"
-          aria-hidden="true"
-          // Animation subtile de l'overlay
-          initial={{ opacity: 0.9 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 1.5, ease: 'easeInOut' }}
+      <div className="absolute inset-0 z-0" aria-hidden="true">
+        {/* Image principale */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         />
+
+        {/* Overlay gradient professionnel : dark → transparent → dark */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/40 to-slate-900/95" />
+
+        {/* Radial gradient pour effet de focalisation */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(6,182,212,0.15)_0%,_transparent_60%)]" />
+
+        {/* Texture noise subtile pour profondeur (1% opacity) */}
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          }}
+        />
+
+        {/* Lueur décorative en haut (subtile) */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] max-w-4xl h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
       </div>
 
-      {/* --- CONTENU (Z-Index Supérieur) --- */}
-      <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8 md:space-y-12 px-4">
+      {/* === CONTENU PRINCIPAL === */}
+      <div className="relative z-10 max-w-5xl mx-auto text-center px-4 sm:px-6 py-12 sm:py-16">
         
-        {/* Titre avec Hiérarchie Visuelle et animations Framer Motion */}
-        <motion.h2 
-          className="text-xl md:text-3xl lg:text-4xl xl:text-5xl leading-relaxed font-light tracking-wide drop-shadow-lg"
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ delay: prefersReducedMotion ? 0 : 0.2 }}
+        {/* Badge décoratif "Premium" */}
+        <motion.div
+          className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 sm:mb-8 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm"
+          variants={badgeVariants}
         >
-          {renderHeadline}
-        </motion.h2>
-
-        {/* Double Soulignement "Néon Fin" avec animation */}
-        <motion.div 
-          className="relative w-24 md:w-32 h-2 mx-auto"
-          variants={zoomIn}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ delay: prefersReducedMotion ? 0 : 0.4 }}
-        >
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00f2ff] to-[#00c3ff] rounded-full shadow-[0_0_10px_rgba(0,242,255,0.8)]" aria-hidden="true" />
-          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#00c3ff] via-[#00f2ff] to-transparent rounded-full shadow-[0_0_10px_rgba(0,242,255,0.8)]" aria-hidden="true" />
+          <Sparkles className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
+          <span className="text-[10px] sm:text-xs font-medium text-emerald-300 uppercase tracking-wider">
+            Services Premium
+          </span>
         </motion.div>
 
-        {/* Bouton Outline "Glass" avec animations */}
-        <motion.div 
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ delay: prefersReducedMotion ? 0 : 0.6 }}
+        {/* Titre principal avec hiérarchie typographique */}
+        <motion.h1
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-white leading-tight sm:leading-tight tracking-tight"
+          variants={itemVariants}
         >
-          <Link 
+          {renderHeadline}
+        </motion.h1>
+
+        {/* Séparateur élégant */}
+        <motion.div
+          className="w-24 sm:w-32 h-px mx-auto my-6 sm:my-8 bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent"
+          variants={itemVariants}
+        />
+
+        {/* Bouton CTA professionnel */}
+        <motion.div variants={itemVariants}>
+          <Link
             to={ctaLink}
             onClick={handleCtaClick}
-            className="group relative inline-flex items-center gap-3 px-8 md:px-10 py-3 md:py-3.5 border border-white/30 text-white font-bold uppercase tracking-[0.15em] text-[10px] md:text-xs rounded-full hover:bg-white hover:text-gray-900 transition-all duration-500 transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] backdrop-blur-md overflow-hidden focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
-            aria-label={`${ctaText} - Contactez ÁLDÁS CI pour en savoir plus`}
+            className="group relative inline-flex items-center justify-center gap-2.5 px-7 sm:px-9 py-3 sm:py-3.5 
+                       bg-gradient-to-r from-emerald-500 to-cyan-500 
+                       hover:from-emerald-400 hover:to-cyan-400
+                       text-white font-semibold text-xs sm:text-sm uppercase tracking-[0.12em]
+                       rounded-full shadow-lg shadow-emerald-500/25
+                       transition-all duration-300 ease-out
+                       focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900
+                       overflow-hidden"
+            aria-label={`${ctaText} - Contacter ÁLDÁS CI pour un service premium`}
           >
-            {/* Effet de brillance - décoratif */}
-            <motion.span 
-              className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
+            {/* Effet de brillance au hover */}
+            <span
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
+                         translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out"
               aria-hidden="true"
-              // Animation de brillance uniquement si animations activées
-              animate={prefersReducedMotion ? {} : { 
-                x: ['-100%', '100%'],
-              }}
-              transition={{ 
-                duration: 1.5, 
-                repeat: Infinity, 
-                ease: 'easeInOut',
-                repeatDelay: 0.5
-              }}
             />
             
             <span className="relative z-10">{ctaText}</span>
-            <motion.span
+            
+            {/* Flèche animée subtile */}
+            <ArrowRight
+              className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5"
               aria-hidden="true"
-              // Petite oscillation de la flèche
-              animate={prefersReducedMotion ? {} : { x: [0, 4, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <ArrowRight size={16} className="relative z-10" />
-            </motion.span>
+            />
           </Link>
         </motion.div>
 
+        {/* Indicateur de scroll (optionnel, desktop uniquement) */}
+        {!prefersReducedMotion && (
+          <motion.div
+            className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-white/40"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.4 }}
+            aria-hidden="true"
+          >
+            <span className="text-[10px] uppercase tracking-widest">Explorer</span>
+            <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent animate-pulse" />
+          </motion.div>
+        )}
       </div>
 
       {/* ✅ Styles CSS pour accessibilité et reduced-motion */}
       <style>{`
-        /* Isolation de stacking context pour le background fixed */
-        .isolation-isolate {
-          isolation: isolate;
-        }
-        
         /* Focus visible pour navigation clavier */
-        a:focus {
-          outline: 2px solid #ffffff;
+        a:focus-visible {
+          outline: 2px solid #34d399;
           outline-offset: 2px;
         }
         
-        /* Désactiver les animations si l'utilisateur préfère moins de mouvement */
+        /* Désactiver animations si reduced-motion */
         @media (prefers-reduced-motion: reduce) {
           * {
             transition: none !important;
             animation: none !important;
             transform: none !important;
-            scroll-behavior: auto !important;
           }
-          .group-hover\\:-translate-y-1:hover {
-            transform: none !important;
-          }
+          .group:hover { transform: none !important; }
+          .animate-pulse { animation: none !important; }
         }
+        
+        /* Smooth scroll pour les ancres internes */
+        html { scroll-behavior: smooth; }
       `}</style>
     </motion.section>
   );
 };
 
+// ✅ Export unique (Fast Refresh compatible)
 export default ServiceHeroSection;

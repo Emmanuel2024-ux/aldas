@@ -1,6 +1,3 @@
-/* src/components/UI/SectionHeader.css */
-
-/* 🎬 Animations extraites pour performance et réutilisation */
 @keyframes sectionHeaderFadeIn {
   from { 
     opacity: 0; 
