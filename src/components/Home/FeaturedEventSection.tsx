@@ -129,69 +129,13 @@ const FeaturedEventSection = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isLightboxOpen, handleCloseLightbox]);
 
-  // ✅ Schema.org JSON-LD
-  const eventSchema = useMemo(() => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://www.aldas-ci.com';
-    
-    const parseDate = (dateStr: string): string => {
-      const months: Record<string, string> = {
-        'Janvier': '01', 'Février': '02', 'Mars': '03', 'Avril': '04',
-        'Mai': '05', 'Juin': '06', 'Juillet': '07', 'Août': '08',
-        'Septembre': '09', 'Octobre': '10', 'Novembre': '11', 'Décembre': '12'
-      };
-      const parts = dateStr.split(' ');
-      if (parts.length >= 3) {
-        const day = parts[0].padStart(2, '0');
-        const month = months[parts[1]] || '01';
-        const year = parts[2];
-        return `${year}-${month}-${day}`;
-      }
-      return new Date().toISOString().split('T')[0];
-    };
-
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'Event',
-      '@id': `${baseUrl}${link}#featured-event`,
-      name: title,
-      description,
-      eventType: 'https://schema.org/BusinessEvent',
-      eventStatus: 'https://schema.org/EventCompleted',
-      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-      startDate: parseDate(date),
-      endDate: parseDate(date),
-      location: {
-        '@type': 'Place',
-        name: location,
-        address: { '@type': 'PostalAddress', addressLocality: 'Abidjan', addressCountry: 'CI' }
-      },
-      organizer: {
-        '@type': 'LocalBusiness',
-        name: 'ÁLDÁS CI',
-        url: baseUrl,
-        telephone: '+2250747265693'
-      },
-      image: galleryImages.map(img => ({
-        '@type': 'ImageObject',
-        url: img.src,
-        caption: img.alt,
-        description: img.description
-      })),
-      attendee: { '@type': 'Audience', audienceType: 'VIP', name: attendees },
-      offers: { '@type': 'Offer', availability: 'https://schema.org/InStock', url: `${baseUrl}${link}` }
-    };
-  }, [title, description, date, location, attendees, link, galleryImages]);
 
   // ✅ Helper pour icônes responsives (optionnel, pour DRY code)
   const responsiveIconClass = "w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 flex-shrink-0";
 
   return (
     <>
-      {/* Schema.org JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
-      />
+     
 
       {/* Section principale */}
       <section

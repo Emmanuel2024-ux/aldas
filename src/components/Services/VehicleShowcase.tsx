@@ -1,9 +1,19 @@
 // src/components/Services/VehicleShowcase.tsx
+// ============================================================================
+// 🎯 VEHICLE SHOWCASE - IMPORTS CORRIGÉS - ÁLDÁS CI
+// ============================================================================
+
 import { useMemo, useCallback, useEffect, useRef } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
+
+// ✅ Composants React Swiper (avec alias pour éviter conflit)
+import { Swiper as SwiperComponent, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Keyboard, A11y } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
 
+// ✅ Type TypeScript pour l'instance Swiper (avec alias)
+import type { Swiper as SwiperType } from 'swiper';
+
+// ✅ Imports locaux
 import { carsData } from '../../data/carsData';
 import VehicleCard from './VehicleCard';
 
@@ -49,11 +59,12 @@ const VehicleShowcase = () => {
   const announcementRef = useRef<HTMLDivElement>(null);
 
   // ✅ Gestionnaire de changement de slide pour annonces accessibles
-  const handleSlideChange = useCallback((swiper: unknown) => {
+  const handleSlideChange = useCallback((swiper: SwiperType): void => {
     if (announcementRef.current) {
-      const currentIndex = swiper.realIndex + 1;
-      const totalSlides = randomCars.length + 1; // +1 pour le slide "Catalogue"
-      const carName = randomCars[swiper.realIndex]?.name || 'Catalogue complet';
+      const currentIndex: number = swiper.realIndex + 1;
+      const totalSlides: number = randomCars.length + 1; // +1 pour le slide "Catalogue"
+      const carName: string = randomCars[swiper.realIndex]?.name || 'Catalogue complet';
+      
       announcementRef.current.textContent = `Véhicule ${currentIndex} sur ${totalSlides} : ${carName}`;
     }
   }, [randomCars]);
@@ -70,32 +81,6 @@ const VehicleShowcase = () => {
       navButton?.click();
     }
   }, []);
-
-  // ✅ Schema.org JSON-LD pour le showcase de véhicules
-  const showcaseSchema = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    '@id': `https://www.aldas-ci.com/services/mobilite#${SHOWCASE_ID}`,
-    name: 'Sélection de véhicules premium ÁLDÁS',
-    description: 'Découvrez notre sélection de véhicules de location premium disponibles immédiatement à Abidjan',
-    itemListElement: randomCars.map((car, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Car',
-        name: `${car.brand} ${car.name}`,
-        description: `Location de ${car.brand} ${car.name} à Abidjan`,
-        offers: {
-          '@type': 'Offer',
-          price: car.price,
-          priceCurrency: 'XOF',
-          availability: 'https://schema.org/InStock'
-        },
-        seatingCapacity: car.seats,
-        vehicleTransmission: car.transmission === 'A' ? 'Automatic' : 'Manual'
-      }
-    }))
-  }), [randomCars]);
 
   // ✅ Bloquer le scroll horizontal du body pendant le swipe (mobile)
   useEffect(() => {
@@ -119,11 +104,6 @@ const VehicleShowcase = () => {
       aria-roledescription="carousel"
       aria-label="Carrousel de véhicules premium disponibles à la location"
     >
-      {/* ✅ Schema.org JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(showcaseSchema) }}
-      />
       
       {/* ✅ Titre H2 pour SEO et accessibilité */}
       <h2 
@@ -144,7 +124,7 @@ const VehicleShowcase = () => {
 
       <div className="container mx-auto px-0 md:px-4 relative z-10">
         
-        <Swiper
+        <SwiperComponent
           modules={[Navigation, Pagination, Keyboard, A11y]}
           spaceBetween={24}
           slidesPerView={'auto'}
@@ -234,7 +214,7 @@ const VehicleShowcase = () => {
                </span>
             </a>
           </SwiperSlide>
-        </Swiper>
+        </SwiperComponent>
 
         {/* Contrôles avec accessibilité complète */}
         <div 

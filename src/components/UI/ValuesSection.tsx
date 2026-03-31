@@ -254,30 +254,7 @@ const ValuesSection = ({
           })}
         </motion.div>
       </div>
-
-      {/* ✅ Schema.org JSON-LD pour les valeurs (SEO) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            'name': 'ÁLDÁS CI',
-            'hasOfferCatalog': {
-              '@type': 'OfferCatalog',
-              'name': 'Valeurs fondamentales',
-              'description': 'Les principes qui guident notre approche du service premium',
-              'itemListElement': memoizedValues.map((v, i) => ({
-                '@type': 'OfferCatalogItem',
-                'position': i + 1,
-                'name': v.title,
-                'description': v.text,
-                'additionalType': 'CorporateValue'
-              }))
-            }
-          })
-        }}
-      />
+      
 
       {/* ✅ Styles CSS pour états focus et reduced-motion */}
       <style>{`

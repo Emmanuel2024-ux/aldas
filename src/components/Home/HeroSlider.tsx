@@ -104,9 +104,9 @@ const HeroSlider = () => {
             </span>
 
             {/* Titre */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-lg animate-fade-in-up delay-100">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-lg animate-fade-in-up delay-100">
               {slide.title}
-            </h1>
+            </h2>
 
             {/* Description */}
             <div className="max-h-[40vh] overflow-y-auto custom-scrollbar mb-6 sm:mb-8 animate-fade-in-up delay-200">

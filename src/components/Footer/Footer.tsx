@@ -54,44 +54,6 @@ const Footer = () => {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }, []);
 
-  // ✅ Schema.org Organization JSON-LD
-  const organizationSchema = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    '@id': 'https://www.aldas-ci.com/#organization',
-    name: footerData.brand.name,
-    alternateName: ['ÁLDÁS', 'Aldas Conciergerie'],
-    description: footerData.brand.description,
-    url: 'https://www.aldas-ci.com',
-    image: `${window.location.origin}${footerData.brand.logo}`,
-    telephone: footerData.contacts.phone,
-    email: footerData.contacts.email,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: footerData.contacts.address.street,
-      addressLocality: footerData.contacts.address.city,
-      addressCountry: 'CI',
-      addressRegion: 'Abidjan'
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: '5.3600',
-      longitude: '-4.0083'
-    },
-    openingHours: 'Mo-Su 08:00-20:00',
-    priceRange: '$$$',
-    sameAs: footerData.socials.map(s => s.href),
-    makesOffer: {
-      '@type': 'Offer',
-      itemOffered: {
-        '@type': 'Service',
-        name: 'Services premium ÁLDÁS',
-        serviceType: ['Location de voitures', 'Navettes', 'Conciergerie', 'Événementiel'],
-        areaServed: 'Abidjan, Côte d\'Ivoire'
-      }
-    }
-  }), []);
-
   // ✅ Gestionnaire de soumission newsletter
   const handleNewsletterSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -104,12 +66,6 @@ const Footer = () => {
 
   return (
     <>
-      {/* ✅ Schema.org JSON-LD injecté dans le footer (présent sur toutes les pages) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-      />
-      
       <footer 
         className="relative bg-gradient-to-b from-[#0a0a0a] to-black text-white pt-20 pb-10 mt-auto overflow-hidden"
         role="contentinfo"

@@ -356,88 +356,8 @@ const ServiceGrid = ({
   const titleId = `${sectionId}-title`;
   const descId = `${sectionId}-description`;
 
-  // ✅ Schema.org JSON-LD enrichi
-  const servicesSchema = useMemo(() => {
-    const baseUrl = typeof window !== 'undefined' 
-      ? window.location.origin 
-      : 'https://www.aldas-ci.com';
-    const currentUrl = `${baseUrl}${location.pathname}`;
 
-    return {
-      '@context': 'https://schema.org',
-      '@graph': [
-        {
-          '@type': 'ItemList',
-          '@id': `${currentUrl}#${sectionId}`,
-          name: sectionTitle,
-          description: `Découvrez nos services premium chez ÁLDÁS CI : ${displayedServices.map(s => s.title).join(', ')}`,
-          url: currentUrl,
-          itemListElement: displayedServices.map((service, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            item: {
-              '@type': 'Service',
-              '@id': `${baseUrl}${service.link}#service`,
-              name: service.title,
-              description: service.details,
-              serviceType: service.badge,
-              provider: {
-                '@type': 'LocalBusiness',
-                name: 'ÁLDÁS CI',
-                url: baseUrl,
-                telephone: '+2250747265693',
-                address: {
-                  '@type': 'PostalAddress',
-                  streetAddress: 'Riviera Ciad, Rue E22',
-                  addressLocality: 'Abidjan',
-                  addressCountry: 'CI'
-                }
-              },
-              areaServed: {
-                '@type': 'City',
-                name: 'Abidjan, Côte d\'Ivoire'
-              },
-              offers: {
-                '@type': 'Offer',
-                availability: 'https://schema.org/InStock',
-                url: `${baseUrl}${service.link}`,
-                priceSpecification: {
-                  '@type': 'PriceSpecification',
-                  priceCurrency: 'XOF',
-                  eligibleRegion: 'CI',
-                  price: 'Sur devis'
-                }
-              },
-              category: service.badge,
-              serviceOutput: {
-                '@type': 'Thing',
-                name: `Service ${service.badge} premium`,
-                description: service.subtitle
-              }
-            }
-          }))
-        },
-        // ✅ Breadcrumb pour navigation
-        {
-          '@type': 'BreadcrumbList',
-          '@id': `${currentUrl}#breadcrumb`,
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Accueil', item: baseUrl },
-            { '@type': 'ListItem', position: 2, name: 'Services', item: `${baseUrl}/services` },
-            ...(activeSlug 
-              ? [{
-                  '@type': 'ListItem',
-                  position: 3,
-                  name: displayedServices.find(s => s.slug === activeSlug)?.title || 'Service',
-                  item: `${baseUrl}/services/${activeSlug}`
-                }]
-              : []
-            )
-          ]
-        }
-      ]
-    };
-  }, [displayedServices, sectionTitle, sectionId, location.pathname, activeSlug]);
+  
 
   // ✅ Injection dynamique des meta tags Open Graph / Twitter
   useEffect(() => {
@@ -520,12 +440,7 @@ const ServiceGrid = ({
         itemScope
         itemType="https://schema.org/Service"
       >
-        {/* ✅ Schema.org JSON-LD injecté */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesSchema) }}
-        />
-
+        
         <div className="container mx-auto px-4 relative z-10">
           <ModernHR />
 

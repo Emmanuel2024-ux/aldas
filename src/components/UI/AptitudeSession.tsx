@@ -69,7 +69,6 @@ const iconVariants: Variants = {
 
 const AptitudesSection = ({ 
   items,
-  title = "Nos aptitudes clés",
   subtitle = "Trois piliers essentiels qui définissent l'excellence de notre conciergerie.",
   ariaLabel = "Nos aptitudes fondamentales en conciergerie haut de gamme",
   id = "aptitudes-section",
@@ -145,30 +144,7 @@ const AptitudesSection = ({
         backgroundPosition: 'left bottom, right top'
       }}
     >
-      {/* Schema.org JSON-LD pour la section d'aptitudes */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            '@id': `https://www.aldas-ci.com/services/conciergerie#${id}`,
-            name: title,
-            description: subtitle,
-            itemListElement: memoizedItems.map((item, index) => ({
-              '@type': 'ListItem',
-              position: index + 1,
-              item: {
-                '@type': 'Service',
-                name: item.title,
-                description: item.description || item.text.replace(/<[^>]*>/g, ''),
-                serviceType: 'Conciergerie',
-                areaServed: 'Abidjan, Côte d\'Ivoire'
-              }
-            }))
-          })
-        }}
-      />
+      
       
       <div className="container mx-auto px-4 relative z-10">
         

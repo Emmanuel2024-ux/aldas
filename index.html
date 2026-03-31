@@ -47,24 +47,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://www.googletagmanager.com" />
     
-    <!-- Polices (optionnel - si vous utilisez Google Fonts) -->
+    <!-- Polices -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
-    <!-- Schema.org de base (sera enrichi dynamiquement) -->
-    <script type="application/ld+json">
+    <!-- ✅ Schema.org MINIMAL : uniquement les données GLOBALES de l'entreprise -->
+    <!-- Ce schema sert de référence pour les pages via @id -->
+    <script type="application/ld+json" id="global-organization-schema">
     {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
+      "@id": "https://www.aldas-ci.com/#organization",
       "name": "ÁLDÁS CI",
       "image": "https://www.aldas-ci.com/logo.jpg",
       "url": "https://www.aldas-ci.com",
       "telephone": "+2250747265693",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "Riviera Ciad, Rue E22",
         "addressLocality": "Abidjan",
         "addressCountry": "CI"
       },
-      "priceRange": "$$$",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "5.359951",
+        "longitude": "-4.008256"
+      },
       "sameAs": [
         "https://www.facebook.com/aldas-ci",
         "https://www.instagram.com/aldas-ci",
@@ -72,34 +79,27 @@
       ]
     }
     </script>
+    
     <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CDZ0SJ9W77"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-CDZ0SJ9W77', {
-      'anonymize_ip': true,
-      'send_page_view': true,
-      'page_title': document.title,
-      'page_location': window.location.href
-    });
-  </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CDZ0SJ9W77"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CDZ0SJ9W77', {
+        'anonymize_ip': true,
+        'send_page_view': false
+      });
+    </script>
   </head>
   <body>
     <!-- Container React -->
-    <div id="root">
-      <main role="main" aria-busy="true" aria-label="Chargement de l'application ÁLDÁS CI">
-        <h1 class="sr-only">ÁLDÁS CI - Services Premium en Côte d'Ivoire</h1>
-        <p class="sr-only">Location de voitures, navettes, conciergerie et événementiel à Abidjan.</p>
-      </main>
-    </div>
+    <div id="root"></div>
     
     <!-- Entry Point -->
     <script type="module" src="/src/main.jsx"></script>
     
-    <!-- No-JS Fallback (affichage si JavaScript désactivé) -->
+    <!-- No-JS Fallback -->
     <noscript>
       <style>
         #root { display: none; }
@@ -114,7 +114,7 @@
       </style>
       <div class="noscript-msg">
         <div>
-          <h1> JavaScript requis</h1>
+          <h1>JavaScript requis</h1>
           <p>ÁLDÁS CI nécessite JavaScript pour fonctionner correctement.</p>
           <p>Veuillez l'activer ou <a href="https://www.aldas-ci.com/sitemap.xml">consulter notre plan du site</a>.</p>
         </div>

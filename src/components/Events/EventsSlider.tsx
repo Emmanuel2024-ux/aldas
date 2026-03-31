@@ -88,25 +88,7 @@ const EventSlider = ({
     }
   }, [memoizedSlides, id]);
 
-  // ✅ Schema.org JSON-LD
-  const sliderSchema = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    '@id': `https://www.aldas-ci.com/services/evenements#${id}`,
-    name: 'Valeurs et expertises ÁLDÁS Événementiel',
-    description: 'Nos engagements qualité en organisation d\'événements premium à Abidjan',
-    itemListElement: memoizedSlides.map((slide, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Service',
-        name: slide.title,
-        description: slide.description || slide.text,
-        serviceType: 'Organisation événementielle',
-        areaServed: 'Abidjan, Côte d\'Ivoire'
-      }
-    }))
-  }), [memoizedSlides, id]);
+  
 
   // ✅ Gestion du touch pour éviter les conflits de scroll
   useEffect(() => {
@@ -140,11 +122,6 @@ const EventSlider = ({
       aria-label={ariaLabel}
       aria-roledescription="carousel"
     >
-      {/* Schema.org JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(sliderSchema) }}
-      />
       
       {/* Annonce sr-only pour lecteurs d'écran */}
       <div 

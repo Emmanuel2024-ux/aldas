@@ -147,23 +147,6 @@ const EventLightbox = ({
   const handleThumb = useCallback((i: number) => setCurrentIndex(i), []);
   const handleOverlay = useCallback((e: React.MouseEvent) => { if (e.target === e.currentTarget) onClose(); }, [onClose]);
 
-  // ✅ Schema.org
-  const imageSchema = useMemo(() => {
-    if (!currentImage) return null;
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://www.aldas-ci.com';
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'ImageObject',
-      '@id': `${base}/gallery/${currentImage.title.toLowerCase().replace(/\s+/g, '-')}`,
-      contentUrl: currentImage.src,
-      url: currentImage.src,
-      name: currentImage.title,
-      description: currentImage.description,
-      caption: currentImage.alt,
-      representativeOfPage: 'False',
-      image: { '@type': 'ImageObject', url: currentImage.src, width: 1200, height: 800 }
-    };
-  }, [currentImage]);
 
   // ✅ ARIA announcement
   const announcement = useMemo(() => 
@@ -181,9 +164,6 @@ const EventLightbox = ({
 
   return (
     <>
-      {imageSchema && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageSchema) }} />
-      )}
 
       <div
         ref={lightboxRef}

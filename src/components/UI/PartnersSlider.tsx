@@ -106,24 +106,6 @@ const PartnersSlider = ({
     }
   }, [partners.length]);
 
-  // ✅ Schema.org JSON-LD mémoïsé (évite les recalculs à chaque render)
-  const partnersSchema = useMemo(() => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://www.aldas-ci.com';
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      'name': 'ÁLDÁS CI',
-      'knowsAbout': 'Partenariats stratégiques',
-      'partner': partners.map(p => ({
-        '@type': 'Organization',
-        'name': p.name,
-        'description': p.description,
-        'url': p.url,
-        'logo': `${baseUrl}${p.logo.startsWith('/') ? p.logo : `/${p.logo}`}`
-      }))
-    };
-  }, [partners]);
-
   // ✅ Effet pour initialiser l'annonce ARIA (une seule fois)
   useEffect(() => {
     if (announcementRef.current && partners.length > 0) {
@@ -266,12 +248,6 @@ const PartnersSlider = ({
             ))}
           </Swiper>
         </div>
-
-        {/* ✅ Schema.org JSON-LD injecté une seule fois */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(partnersSchema) }}
-        />
       </div>
 
       {/* ✅ Styles CSS pour accessibilité et reduced-motion */}

@@ -216,22 +216,6 @@ const ContactFormSplit = ({
     }
   }, [formData, onFormSubmit, validateForm, errors, formId, prefersReducedMotion]);
 
-  // ✅ Schema.org
-  const contactSchema = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'ContactPage',
-    '@id': `https://www.aldas-ci.com/contact#${formId}`,
-    name: 'Formulaire de contact ÁLDÁS CI',
-    description: 'Demandez un devis ou une réservation pour nos services premium',
-    potentialAction: {
-      '@type': 'CommunicateAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: 'https://www.aldas-ci.com/contact',
-        actionPlatform: ['DesktopWebPlatform', 'MobileWebPlatform']
-      }
-    }
-  }), [formId]);
 
   // ✅ Options services
   const serviceOptions = useMemo(() => [
@@ -254,9 +238,6 @@ const ContactFormSplit = ({
       viewport={{ once: true, margin: '-100px' }}
       variants={containerVariants}
     >
-      {/* Schema.org JSON-LD */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }} />
-
       <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-12 min-h-inherit">
         
         {/* === GAUCHE : IMAGE DÉCORATIVE === */}

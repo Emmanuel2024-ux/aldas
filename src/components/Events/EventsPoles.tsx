@@ -158,33 +158,8 @@ const PolesSection = ({
     iconBg: '#f1f5f9',     // Slate 100
   }), []);
 
-  // ✅ Schema.org JSON-LD pour la section de pôles
-  const polesSchema = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    '@id': `https://www.aldas-ci.com/services/evenements#${id}`,
-    name: sectionTitle,
-    description: 'Catalogue de nos pôles d\'expertise en organisation d\'événements premium à Abidjan',
-    itemListElement: poles.map((pole, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Service',
-        name: pole.title,
-        description: pole.description || pole.desc,
-        serviceType: `Événementiel - ${pole.badge}`,
-        areaServed: 'Abidjan, Côte d\'Ivoire',
-        offers: {
-          '@type': 'Offer',
-          availability: 'https://schema.org/InStock',
-          url: `https://www.aldas-ci.com${pole.link || '/contact'}?pole=${encodeURIComponent(pole.badge)}`
-        }
-      }
-    }))
-  }), [poles, id, sectionTitle]);
-
   // ✅ Gestionnaire de clic pour tracking optionnel
-  const handlePoleLinkClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, poleTitle: string) => {
+  const handlePoleLinkClick = useCallback((poleTitle: string) => {
     console.log(`📊 Pôle clicked: ${poleTitle}`);
     // Laisser le lien naviguer normalement
   }, []);
@@ -206,11 +181,6 @@ const PolesSection = ({
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
     >
-      {/* ✅ Injection du Schema.org JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(polesSchema) }}
-      />
 
       {/* Titre H2 pour SEO (sr-only car visuellement géré par les cartes) */}
       <h2 
@@ -321,7 +291,7 @@ const PolesSection = ({
                     {pole.link && (
                       <a 
                         href={pole.link}
-                        onClick={(e) => handlePoleLinkClick(e, pole.title)}
+                        onClick={() => handlePoleLinkClick(pole.title)}
                         className="group inline-flex items-center gap-2 px-4 py-2 md:px-8 text-xs md:text-sm font-bold uppercase tracking-widest border-2 rounded-lg md:rounded-xl transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                         style={{ 
                           borderColor: colors.accent, 
